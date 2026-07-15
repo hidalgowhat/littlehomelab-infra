@@ -1,1 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: utility-ping-service
+  namespace: default
+  labels:
+    app: utility-ping
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: utility-ping
+  template:
+    metadata:
+      labels:
+        app: utility-ping
+    spec:
+      # 1. THE TOLERATION
+      # This allows the pod to be scheduled on your tainted node.
+      # It must match your exact taint configuration.
+      tolerations:
+      - key: "memory"
+        operator: "Equal"
+        value: "critical"
+        effect: "NoSchedule"
 
+      # 2. THE NODE SELECTOR
+      # This forces the pod to land ONLY on the 2GB Pi.
+      # Without this, the pod might schedule on your Pi 5 instead.
+      nodeSelector:
+        hardware-tier: low-memory
+
+      containers:
+      - name: web-probe
+        image: nginx:alpine
+        ports:
+        - containerPort: 80
+        
+        # 3. THE RESOURCE LIMITS (Crucial for 2GB Pi stability)
+        # We guarantee the pod gets 20Mi of RAM, but hard-cap it at 50Mi.
+        # If it hits 50Mi, Kubernetes terminates it before it affects the OS.
+        resources:
+          requests:
+            memory: "20Mi"
+            cpu: "50m"
+          limits:
+            memory: "50Mi"
+            cpu: "100m"
