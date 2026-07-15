@@ -5,7 +5,9 @@ metadata:
   namespace: kube-system
 spec:
   interfaces:
-    - "^eth[0-9]+"
-    - "^wlan[0-9]+"
+    - "^eth[0-9]+"     # Raspberry Pi 3/4 (eth0)
+    - "^end[0-9]+"     # Raspberry Pi 5 (end0)
+    - "^en[a-z0-9]+"   # Modern Linux/PC (enp3s0, ens3, etc.)
+    - "^wlan[0-9]+"    # Wi-Fi interfaces (wlan0)
   externalIPs: true
   loadBalancerIPs: true
