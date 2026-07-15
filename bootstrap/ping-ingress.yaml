@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ping-ingress
+  namespace: default
+  annotations:
+    # Magic annotation: Tells cert-manager to automatically use your issuer
+    cert-manager.io/cluster-issuer: selfsigned-issuer
+spec:
+  ingressClassName: traefik
+  rules:
+  - host: ping.homelab.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: utility-ping-service
+            port:
+              number: 80
+  tls:
+  - hosts:
+    - ping.homelab.local
+    secretName: ping-homelab-tls  # cert-manager will save your SSL keys here
