@@ -1,0 +1,9 @@
+apiVersion: cilium.io/v2alpha1
+kind: CiliumLoadBalancerIPPool
+metadata:
+  name: homelab-ip-pool
+  namespace: kube-system
+spec:
+  blocks:
+    - start: "172.69.115.210"  # <-- Change to fit your local subnet
+      stop: "172.69.115.250"   # <-- Change to fit your local subnet
