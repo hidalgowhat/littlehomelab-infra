@@ -21,10 +21,15 @@ spec:
         - containerPort: 3000
           name: http
         env:
-        # Fixes the Host Validation Error:
+        # 1. Bypass host validation header constraints
         - name: HOMEPAGE_ALLOWED_HOSTS
           value: "homepage.littlehomelab.com"
-        # Keeps our config directories writable for logging:
+        # 2. Tell the logging framework to output to stdout instead of looking for a physical file
+        - name: LOG_TARGET
+          value: "stdout"
+        # 3. Disable filesystem write logging completely
+        - name: LOG_FILE
+          value: "false"
         volumeMounts:
         - name: config-volume
           mountPath: /app/config/settings.yaml
