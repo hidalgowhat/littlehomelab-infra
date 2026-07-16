@@ -5,11 +5,20 @@ metadata:
   namespace: default
   annotations:
     # Magic annotation: Tells cert-manager to automatically use your issuer
-    cert-manager.io/cluster-issuer: selfsigned-issuer
+    # cert-manager.io/cluster-issuer: selfsigned-issuer
+    # 1. Tell Traefik to force secure entrypoints and TLS:
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.tls: "true"
+    # 2. Tell cert-manager to handle the Let's Encrypt DNS-01 challenge:
+    cert-manager.io/cluster-issuer: letsencrypt-cloudflare
 spec:
   ingressClassName: traefik
+  tls:
+  - hosts:
+    - ping.littlehomelab.com # Your custom local domain
+    secretName: utility-ping-tls-secret # Where cert-manager will save the certificate
   rules:
-  - host: ping.homelab.local
+  - host: ping.littlehomelab.com
     http:
       paths:
       - path: /
@@ -19,7 +28,3 @@ spec:
             name: utility-ping-service
             port:
               number: 80
-  tls:
-  - hosts:
-    - ping.homelab.local
-    secretName: ping-homelab-tls  # cert-manager will save your SSL keys here
