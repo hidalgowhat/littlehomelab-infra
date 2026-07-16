@@ -5,7 +5,7 @@ metadata:
   namespace: homepage
 data:
   settings.yaml: |
-    title: Little Homelab Operations
+    title: "Little Homelab Operations"
     background: "https://images.unsplash.com/photo-1579546929518-9e396f3cc809?w=1600&auto=format&fit=crop&q=80"
     theme: dark
     color: slate
@@ -21,31 +21,31 @@ data:
   services.yaml: |
     - Infrastructure:
         - ArgoCD:
-            icon: argocd.svg
-            href: https://argocd.littlehomelab.com
-            description: GitOps Deployment Controller
+            icon: "argocd.svg"
+            href: "https://argocd.littlehomelab.com"
+            description: "GitOps Deployment Controller"
         - Grafana:
-            icon: grafana.svg
-            href: https://grafana.littlehomelab.com
-            description: Cluster Resource Metrics
+            icon: "grafana.svg"
+            href: "https://grafana.littlehomelab.com"
+            description: "Cluster Resource Metrics"
     - Applications:
         - Utility Ping:
-            icon: pingdom.svg
-            href: https://ping.littlehomelab.com
-            description: Network Latency Monitoring
+            icon: "pingdom.svg"
+            href: "https://ping.littlehomelab.com"
+            description: "Network Latency Monitoring"
 
   bookmarks.yaml: |
     - Homelab Dev:
         - GitHub Repo:
-            - icon: github.svg
-              href: https://github.com/hidalgowhat/littlehomelab-infra
+            - icon: "github.svg"
+              href: "https://github.com/hidalgowhat/littlehomelab-infra"
         - Cloudflare DNS:
-            - icon: cloudflare.svg
-              href: https://dash.cloudflare.com
+            - icon: "cloudflare.svg"
+              href: "https://dash.cloudflare.com"
 
   widgets.yaml: |
     - logo:
-        icon: https://raw.githubusercontent.com/kubernetes/kubernetes/master/logo/logo.png
+        icon: "https://raw.githubusercontent.com/kubernetes/kubernetes/master/logo/logo.png"
     - datetime:
         text_size: xl
         format:
@@ -54,9 +54,7 @@ data:
     - kubernetes:
         cluster:
           show: true
-          cpu: true
-          memory: true
-          nodes: true
 
+  # --- THIS IS THE CRITICAL ADDITION ---
   kubernetes.yaml: |
     mode: cluster
