@@ -54,6 +54,10 @@ data:
     - kubernetes:
         cluster:
           show: true
+          cpu: true
+          memory: true
+        nodes:
+          show: false
 
   # --- THIS IS THE CRITICAL ADDITION ---
   kubernetes.yaml: |
