@@ -1,11 +1,9 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: ping-ingress
-  namespace: default
+  name: utility-ping-ingress
+  namespace: default # Or whichever namespace your ping app lives in
   annotations:
-    # Magic annotation: Tells cert-manager to automatically use your issuer
-    # cert-manager.io/cluster-issuer: selfsigned-issuer
     # 1. Tell Traefik to force secure entrypoints and TLS:
     traefik.ingress.kubernetes.io/router.entrypoints: websecure
     traefik.ingress.kubernetes.io/router.tls: "true"
@@ -25,6 +23,6 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: utility-ping-service
+            name: utility-ping-service # Match your existing service name
             port:
-              number: 80
+              number: 80 # Match your existing service port
