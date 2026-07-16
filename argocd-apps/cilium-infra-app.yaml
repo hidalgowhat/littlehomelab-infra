@@ -1,0 +1,22 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cilium-infra-configs
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/hidalgowhat/littlehomelab-infra.git'
+    targetRevision: HEAD
+    # Adjust this path if your raw Cilium IPAM/L2 YAMLs are in a different folder!
+    # (e.g., if you put them in "apps/cilium" or similar)
+    path: infrastructure/cilium-configs
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: kube-system # Cilium configs usually deploy to kube-system
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
