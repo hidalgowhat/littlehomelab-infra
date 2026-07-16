@@ -6,16 +6,16 @@ metadata:
   annotations:
     traefik.ingress.kubernetes.io/router.entrypoints: websecure
     traefik.ingress.kubernetes.io/router.tls: "true"
-    # Tells cert-manager to generate local TLS keys
-    cert-manager.io/cluster-issuer: selfsigned-issuer
+    # Switched from selfsigned-issuer to Let's Encrypt issuer!
+    cert-manager.io/cluster-issuer: letsencrypt-cloudflare
 spec:
   ingressClassName: traefik
   tls:
   - hosts:
-    - argocd.homelab.local
+    - argocd.littlehomelab.com
     secretName: argocd-tls-secret
   rules:
-  - host: argocd.homelab.local
+  - host: argocd.littlehomelab.com
     http:
       paths:
       - path: /
