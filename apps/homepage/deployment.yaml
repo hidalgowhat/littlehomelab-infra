@@ -20,9 +20,27 @@ spec:
         ports:
         - containerPort: 3000
           name: http
+        env:
+        # Fixes the Host Validation Error:
+        - name: HOMEPAGE_ALLOWED_HOSTS
+          value: "homepage.littlehomelab.com"
+        # Keeps our config directories writable for logging:
         volumeMounts:
         - name: config-volume
-          mountPath: /app/config
+          mountPath: /app/config/settings.yaml
+          subPath: settings.yaml
+        - name: config-volume
+          mountPath: /app/config/services.yaml
+          subPath: services.yaml
+        - name: config-volume
+          mountPath: /app/config/bookmarks.yaml
+          subPath: bookmarks.yaml
+        - name: config-volume
+          mountPath: /app/config/widgets.yaml
+          subPath: widgets.yaml
+        - name: config-volume
+          mountPath: /app/config/kubernetes.yaml
+          subPath: kubernetes.yaml
       volumes:
       - name: config-volume
         configMap:
