@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: root-app
+  name: utility-ping
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
@@ -10,10 +10,10 @@ spec:
   source:
     repoURL: 'https://github.com/hidalgowhat/littlehomelab-infra.git'
     targetRevision: HEAD
-    path: argocd-apps # Watches argocd-apps/ for child definitions
+    path: apps/ping # Points to your raw files in apps/ping
   destination:
     server: 'https://kubernetes.default.svc'
-    namespace: argocd
+    namespace: default
   syncPolicy:
     automated:
       prune: true
