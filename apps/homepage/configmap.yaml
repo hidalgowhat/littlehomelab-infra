@@ -6,7 +6,7 @@ metadata:
 data:
   settings.yaml: |
     title: Little Homelab Operations
-    background: https://images.unsplash.com/photo-1579546929518-9e396f3cc809?w=1600&auto=format&fit=crop&q=80
+    background: "https://images.unsplash.com/photo-1579546929518-9e396f3cc809?w=1600&auto=format&fit=crop&q=80"
     theme: dark
     color: slate
     locale: en-US
