@@ -51,13 +51,13 @@ data:
         format:
           timeStyle: short
           dateStyle: long
-    - kubernetes:
-        cluster:
-          show: true
-          cpu: true
-          memory: true
-        nodes:
-          show: false
+   # - kubernetes:
+   #     cluster:
+   #       show: true
+   #       cpu: true
+   #       memory: true
+   #     nodes:
+   #       show: false
 
   # --- THIS IS THE CRITICAL ADDITION ---
   kubernetes.yaml: |
