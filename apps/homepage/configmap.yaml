@@ -10,13 +10,6 @@ data:
     theme: dark
     color: slate
     locale: en-US
-    layout:
-      Infrastructure:
-        style: row
-        columns: 3
-      Applications:
-        style: row
-        columns: 3
 
   services.yaml: |
     - Infrastructure:
@@ -51,16 +44,6 @@ data:
         format:
           timeStyle: short
           dateStyle: long
-    - kubernetes:
-        cluster:
-          show: true
-          cpu: true
-          memory: true
-        nodes:
-          show: false
-          cpu: true
-          memory: true
 
-  # --- THIS IS THE CRITICAL ADDITION ---
-  kubernetes.yaml: |
-    mode: cluster
+  # Placeholder kept so your deployment's subPath mount doesn't fail
+  kubernetes.yaml: ""
