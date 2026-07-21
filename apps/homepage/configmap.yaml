@@ -13,7 +13,6 @@ data:
   services.yaml: |
     - Infrastructure:
         - ArgoCD:
-            icon: "argocd.svg"
             href: "https://argocd.littlehomelab.com"
             description: "GitOps Deployment Controller"
         - Grafana:
@@ -25,6 +24,12 @@ data:
             icon: "pingdom.svg"
             href: "https://ping.littlehomelab.com"
             description: "Network Latency Monitoring"
+    - Networking:
+        - Hubble UI:
+          icon: si-cilium
+          href: "http://hubble.littlehomelab.com"
+          description: eBPF Network Observability & Traffic Flows
+          siteMonitor: http://hubble.littlehomelab.com
 
   bookmarks.yaml: |
     - Homelab Dev:
