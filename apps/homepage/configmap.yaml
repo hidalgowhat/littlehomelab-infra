@@ -9,6 +9,7 @@ data:
     theme: dark
     color: slate
     locale: en-US
+    headerStyle: boxedWidgets
 
   services.yaml: |
     - Infrastructure:
