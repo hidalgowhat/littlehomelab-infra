@@ -26,10 +26,10 @@ data:
             description: "Network Latency Monitoring"
     - Networking:
         - Hubble UI:
-          icon: si-cilium
-          href: "http://hubble.littlehomelab.com"
-          description: eBPF Network Observability & Traffic Flows
-          siteMonitor: http://hubble.littlehomelab.com
+            icon: si-cilium
+            href: "http://hubble.littlehomelab.com"
+            description: eBPF Network Observability & Traffic Flows
+            siteMonitor: http://hubble.littlehomelab.com
 
   bookmarks.yaml: |
     - Homelab Dev:
