@@ -7,7 +7,7 @@ spec:
   project: default
   source:
     repoURL: 'https://github.com/hidalgowhat/littlehomelab-infra.git'
-    targetRevision: main
+    targetRevision: HEAD
     path: apps/backups
     plugin:
       name: sops-yaml # <--- Required so ArgoCD decrypts via our CMP sidecar
