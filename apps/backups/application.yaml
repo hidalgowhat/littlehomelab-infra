@@ -10,7 +10,7 @@ spec:
     targetRevision: HEAD
     path: apps/backups
     plugin:
-      name: sops-yaml # <--- Required so ArgoCD decrypts via our CMP sidecar
+      name: sops-yaml-v1.0 # <--- Required so ArgoCD decrypts via our CMP sidecar
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: default
