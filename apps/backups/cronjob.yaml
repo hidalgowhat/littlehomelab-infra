@@ -1,0 +1,67 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: k3s-sqlite-backup
+  namespace: default
+spec:
+  # Runs daily at 2:00 AM
+  schedule: "0 2 * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          # Required: K3s SQLite state.db only exists on control-plane nodes
+          nodeSelector:
+            node-role.kubernetes.io/control-plane: "true"
+          tolerations:
+            - key: "node-role.kubernetes.io/control-plane"
+              operator: "Exists"
+              effect: "NoSchedule"
+            - key: "node-role.kubernetes.io/master"
+              operator: "Exists"
+              effect: "NoSchedule"
+          restartPolicy: OnFailure
+          containers:
+            - name: sqlite-r2-backup
+              image: alpine:latest
+              command: ["/bin/sh", "-c"]
+              args:
+                - |
+                  set -e
+                  echo "==> Installing SQLite, AWS CLI, and gzip..."
+                  apk add --no-cache sqlite aws-cli gzip > /dev/null
+
+                  TIMESTAMP=$(date +%Y%m%d-%H%M%S)
+                  BACKUP_FILE="k3s-sqlite-${TIMESTAMP}.db"
+                  TARGET_KEY="backups/${BACKUP_FILE}.gz"
+
+                  echo "==> Creating safe SQLite snapshot..."
+                  sqlite3 /k3s-db/state.db ".backup /tmp/${BACKUP_FILE}"
+
+                  echo "==> Compressing snapshot..."
+                  gzip /tmp/${BACKUP_FILE}
+
+                  echo "==> Uploading to Cloudflare R2 bucket: ${R2_BUCKET}..."
+                  AWS_ACCESS_KEY_ID="${AWS_ACCESS_KEY_ID}" \
+                  AWS_SECRET_ACCESS_KEY="${AWS_SECRET_ACCESS_KEY}" \
+                  AWS_DEFAULT_REGION="us-east-1" \
+                  aws s3 cp "/tmp/${BACKUP_FILE}.gz" "s3://${R2_BUCKET}/${TARGET_KEY}" \
+                    --endpoint-url "https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com"
+
+                  echo "==> Backup completed successfully: ${TARGET_KEY}"
+                  rm -f "/tmp/${BACKUP_FILE}.gz"
+              envFrom:
+                - secretRef:
+                    name: cloudflare-r2-creds
+              volumeMounts:
+                - name: k3s-db-dir
+                  mountPath: /k3s-db
+                  readOnly: true
+          volumes:
+            - name: k3s-db-dir
+              hostPath:
+                path: /var/lib/rancher/k3s/server/db
+                type: Directory
