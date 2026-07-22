@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: backups
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/hidalgowhat/littlehomelab-infra.git'
+    targetRevision: HEAD
+    path: apps/backups
+    plugin:
+      name: sops-yaml # <--- Required so ArgoCD decrypts via our CMP sidecar
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
