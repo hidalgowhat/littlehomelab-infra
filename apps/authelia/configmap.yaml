@@ -1,0 +1,127 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: authelia-config
+  namespace: default
+data:
+  # -------------------------------------------------------------------
+  # 1. Main Authelia Configuration File
+  # -------------------------------------------------------------------
+  configuration.yml: |
+    server:
+      address: 'tcp://0.0.0.0:9091/'
+
+    log:
+      level: info
+
+    theme: dark
+
+    authentication_backend:
+      file:
+        path: /config/users_database.yml
+        password:
+          algorithm: argon2
+
+    access_control:
+      default_policy: deny
+      rules:
+        - domain: "auth.littlehomelab.com"
+          policy: bypass
+        - domain: "*.littlehomelab.com"
+          policy: one_factor
+
+    session:
+      name: authelia_session
+      cookies:
+        - domain: 'littlehomelab.com'
+          authelia_url: 'https://auth.littlehomelab.com'
+         # default_redirection_url: 'https://littlehomelab.com'
+      expiration: 1h
+      inactivity: 5m
+      remember_me: 1M
+
+    regulation:
+      max_retries: 3
+      find_time: 2m
+      ban_time: 5m
+
+    storage:
+      local:
+        path: /config/db/db.sqlite3
+
+    notifier:
+      filesystem:
+        filename: /config/notification.txt
+
+    identity_providers:
+      oidc:
+        hmac_secret: $OIDC_HMAC_SECRET
+        jwks:
+          - key_id: 'main-key'
+            algorithm: 'RS256'
+            use: 'sig'
+            key: |
+              -----BEGIN PRIVATE KEY-----
+              MIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQCqqTgkc1+JbIca
+              V/xqNHCgr4XKpwcLbxElgHBc2rYp0GYuBIVhRxAGTUbv5td6YVCkO+gAuPmpXM/H
+              ZTx3qnm3oYMpDRrNPvdgiSDsLs+RAFIyeG3xubOiBdnyqDF7p9QjsIcmHigJByTt
+              RWki8ceWz9FCB+u3szyGQKg5LqH64wHDWet27xJcuoUqgUO+a/zS7+kIpK5CXxe/
+              JSBPEj4BYsaPPSvy+aW/f2OfpsGt4KalIPZltJko2gdVzGRDKbrs+GpeXBmPMtYN
+              0125XKGUFfiiVI43Bm7jQ0aI1msIFGlPzwfxwHKMh8E1h0hrXICpFWWeOFh9wgFZ
+              QFXpAxSpAgMBAAECggEABaBKmmdcIo8g6kE1EDPDyZpWaEVGy01+r1cGApulESkT
+              20fDyr6RicxQTr5JmNkJNBbeVHAaA/I249wOU6QbkI5rARETvX6KSs+OgIF1Dz18
+              rY8F5zKKmF3GGaoKPT6TH5eVMbBMEdXKAFFPMLXvkQ+va9Rlb22MYjZ9YpWLL8Fb
+              ArvqMGYnNZ24GR7XB7onlZO39toMYa5Eovc42kY9A1tlrAGtCG3PGP7wE0MXWyLD
+              GATUI8Xz0BTULihJyXb/btxbtyOOcqWIuKM1K3hfKqbGx1rDaW/1txbOTMh/ILE0
+              8JPXRzD8cH0nmL8BeeJtul1P+opOjb8FQooNlFJNwQKBgQDkPOl1k6KihSXqwpO2
+              Pkyl14ieyGKyXd50Y4Ulsn2dT35YxxxW7yZXVxuwcDqzi2nan/bScK6c4P079eMi
+              MYiL5GY3KNkjkz+caepv9HYzdJ9IWmhz5Vx953VjNA6hj3UAG17E57WDpJ2s8C9D
+              j3712VXbn4grpc2cZpj6FiNvQQKBgQC/a2w9Eyb2OdN3OA+UpraLQKnuH2An+Q/z
+              xPBPqtKxEI5E7KVRUSh4zjJe3JkzRM6PYT6ZuREnGHmQSPFgUBGw6fnxWW5LRulF
+              36gKHH93iPrOlCy6BKQ9oVSjQzqLSWAJ0n00QkTWyVpVDndoMK4b06sZOxGe/w6a
+              tH+4UbCzaQKBgFQrpolG5f57jg0yrtjRxuCOSQMNsWBIP+a6YPsTBUJDc7v3yhrB
+              XWluZXa/HNbj/iizP4pCJhMS4jD/sEEG9W1p0Mxc0x9MiXP8l4msJP867hb3yHed
+              SWvhNShdpVutlR9x+JQzQ3yF8+Q4O6X1wIOYIBK7lbNLFTWtnJL2ISFBAoGACJxI
+              bibiZckMHhzDdqhZJcJu4ms+5A1sDkcZmDvS5mwcOjV66kGAVI7R7Tp3GbtKn2B8
+              dGXCw8NyFG9zjCWN5itgNt8S+wfhjmcVI/9MLJBY19oKeQOkb7FGIWHwzDssusRh
+              JWyltBOyoIjaDjHCYzYOSEBD9qb6fTMJW70w+aECgYAucCDK/HuBptgztXghmIdP
+              ztNOVuyyjuR3IZPuT/gccLyNGuof1mJSsXKXaf+10o/cMp7eSsCcrULSFfO0bKE4
+              izWnwCqCEKScWEXJTqfNHZ4+i2Bh3cInxVSkaLtYwSIeiBw97Q8jOwMCi/vKu+SJ
+              a8FjvA/oWiuUCqEKpaTDpw==
+              -----END PRIVATE KEY-----
+        claims_policies:
+          argocd_claims:
+            id_token:
+              - preferred_username
+              - email
+              - name
+              - groups
+
+        clients:
+          - client_id: argocd
+            client_name: ArgoCD
+            client_secret: '$pbkdf2-sha512$310000$qVjyi1vd0fvs6b914IR0Bg$lTLjj/i7B8sbb137tkO3NOTVwUmFTMm3fwG9ostBQpQBew2ZSo8INwJGFms9cfFvId2p/10usDBlpxEKZIHaFA'
+            claims_policy: argocd_claims
+            public: false
+            authorization_policy: one_factor
+            redirect_uris:
+              - https://argocd.littlehomelab.com/auth/callback
+            scopes:
+              - openid
+              - profile
+              - email
+              - groups
+
+  # -------------------------------------------------------------------
+  # 2. Local Users Database File
+  # -------------------------------------------------------------------
+  users_database.yml: |
+    users:
+      admin:
+        disabled: false
+        displayname: "Admin User"
+        password: "$argon2id$v=19$m=65536,t=3,p=4$Q1QE79HTcH97SN1QCwtbiw$tSIA6OFpqAPrZnHA7sj+sOmDRAXuycyYi0LCFXGQ22c"
+        email: admin@homelab.lan
+        groups:
+          - admins
+          - dev
