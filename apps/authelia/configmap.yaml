@@ -35,7 +35,7 @@ data:
       cookies:
         - domain: 'littlehomelab.com'
           authelia_url: 'https://auth.littlehomelab.com'
-          default_redirection_url: 'https://homepage.littlehomelab.com'
+          default_redirection_url: 'https://www.google.com'
       expiration: 1h
       inactivity: 5m
       remember_me: 1M

@@ -1,0 +1,7 @@
+# .sops.yaml
+creation_rules:
+  # Encrypt all YAML files with your Age public key
+  - path_regex: .*\.sops\.yaml$
+    encrypted_regex: '^(data|stringData)$'
+    age: >-
+      age17shk2n5pcma33mvzapxh5z48phjhnpskm9juxdvg8aepzn59ja2q6fafg4
