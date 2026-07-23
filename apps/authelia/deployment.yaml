@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: authelia
+  namespace: default
+  labels:
+    app: authelia
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: authelia
+  template:
+    metadata:
+      labels:
+        app: authelia
+    spec:
+      enableServiceLinks: false  # <-- Disables auto-injected K8s service env vars
+      containers:
+        - name: authelia
+          image: authelia/authelia:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 9091
+              name: http
+          envFrom:
+            - secretRef:
+                name: authelia-secrets
+          volumeMounts:
+            - name: config-volume
+              mountPath: /config/configuration.yml
+              subPath: configuration.yml
+            - name: config-volume
+              mountPath: /config/users_database.yml
+              subPath: users_database.yml
+            - name: storage-data
+              mountPath: /config/db
+      volumes:
+        - name: config-volume
+          configMap:
+            name: authelia-config
+        - name: storage-data
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: authelia
+  namespace: default
+  labels:
+    app: authelia
+spec:
+  type: ClusterIP
+  ports:
+    - port: 9091
+      targetPort: 9091
+      name: http
+  selector:
+    app: authelia
