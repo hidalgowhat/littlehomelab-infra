@@ -12,7 +12,7 @@ data:
     name: Authelia
     issuer: https://auth.littlehomelab.com
     clientID: argocd
-    clientSecret: 371e285514b8e7f60aaf72288c0a9986
+    clientSecret: $oidc.authelia.clientSecret
     userClaim: preferred_username
     enableUserInfoGroups: true
     userInfoPath: /api/oidc/userinfo
