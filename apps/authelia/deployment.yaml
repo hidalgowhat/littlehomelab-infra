@@ -15,7 +15,7 @@ spec:
       labels:
         app: authelia
     spec:
-      enableServiceLinks: false  # <-- Disables auto-injected K8s service env vars
+      enableServiceLinks: false  # Disables auto-injected K8s service env vars
       containers:
         - name: authelia
           image: authelia/authelia:latest
@@ -37,8 +37,8 @@ spec:
               mountPath: /config/db
       volumes:
         - name: config-volume
-          configMap:
-            name: authelia-config
+          secret:
+            secretName: authelia-config   # <-- Updated from configMap to secret
         - name: storage-data
           emptyDir: {}
 ---
