@@ -17,3 +17,7 @@ spec:
                 name: authelia
                 port:
                   number: 9091
+  tls:
+    - hosts:
+      - auth.littlehomelab.com
+      secretName: authelia-tls-cert  # Ensure cert-manager creates this secret

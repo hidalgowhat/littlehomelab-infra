@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argocd-rbac-cm
+  namespace: argocd
+data:
+  # Maps members of Authelia's 'admins' group to ArgoCD's built-in 'admin' role
+  policy.csv: |
+    g, admins, role:admin
+  # Tells ArgoCD to extract user groups from the OIDC token
+  scopes: '[groups]'
