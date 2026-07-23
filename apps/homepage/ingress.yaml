@@ -5,6 +5,8 @@ metadata:
   namespace: homepage
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-cloudflare
+    # Attach Authelia ForwardAuth Middleware (Format: namespace-middlewareName@kubernetescrd)
+    traefik.ingress.kubernetes.io/router.middlewares: default-authelia-forwardauth@kubernetescrd
 spec:
   ingressClassName: traefik
   rules:
