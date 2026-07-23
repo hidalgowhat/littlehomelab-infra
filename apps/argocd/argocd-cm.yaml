@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argocd-cm
+  namespace: argocd
+  labels:
+    app.kubernetes.io/name: argocd-cm
+    app.kubernetes.io/part-of: argocd
+data:
+  url: https://argocd.littlehomelab.com
+  oidc.config: |
+    name: Authelia
+    issuer: https://auth.littlehomelab.com
+    clientID: argocd
+    clientSecret: 371e285514b8e7f60aaf72288c0a9986
+    userClaim: preferred_username
+    enableUserInfoGroups: true
+    userInfoPath: /api/oidc/userinfo
+    requestedScopes:
+      - openid
+      - profile
+      - email
+      - groups
