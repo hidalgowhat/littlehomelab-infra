@@ -18,13 +18,12 @@ data:
           - /bin/sh
           - -c
           - |
-            # 1. If Kustomize is present, decrypt SOPS files in-place and run kustomize build
+            set -e
+            # 1. If Kustomize is present, decrypt ONLY *.sops.yaml files and run kustomize build
             if [ -f "kustomization.yaml" ] || [ -f "kustomization.yml" ]; then
-              for file in *.yaml *.yml; do
+              for file in *.sops.yaml *.sops.yml; do
                 [ -f "$file" ] || continue
-                if grep -q "sops:" "$file"; then
-                  /custom-tools/sops -d "$file" > "$file.dec" && mv "$file.dec" "$file"
-                fi
+                /custom-tools/sops -d "$file" > "${file}.tmp" && mv "${file}.tmp" "$file"
               done
               kustomize build .
 
@@ -32,11 +31,14 @@ data:
             else
               for file in *.yaml *.yml; do
                 [ -f "$file" ] || continue
-                if grep -q "sops:" "$file"; then
-                  /custom-tools/sops -d "$file"
-                else
-                  cat "$file"
-                fi
+                case "$file" in
+                  *.sops.yaml|*.sops.yml)
+                    /custom-tools/sops -d "$file"
+                    ;;
+                  *)
+                    cat "$file"
+                    ;;
+                esac
                 echo "---"
               done
             fi

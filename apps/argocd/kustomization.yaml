@@ -10,7 +10,7 @@ resources:
   - argocd-rbac-cm.yaml
   - argocd-secret.sops.yaml
   - ingress.yaml
-
+  - argocd-repo-server-base.yaml
 # 2. Strategic merge patches to modify existing resources
 patchesStrategicMerge:
   - repo-server-patch.yaml
