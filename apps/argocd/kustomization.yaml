@@ -3,8 +3,14 @@ kind: Kustomization
 
 namespace: argocd
 
+# 1. Standalone resources to create
 resources:
-  - cmpconfigmap.yaml
+  - CMPconfigmap.yaml           # Exact casing from your folder
+  - argocd-cm.yaml
+  - argocd-rbac-cm.yaml
+  - argocd-secret.sops.yaml
+  - ingress.yaml
 
+# 2. Strategic merge patches to modify existing resources
 patchesStrategicMerge:
   - repo-server-patch.yaml
