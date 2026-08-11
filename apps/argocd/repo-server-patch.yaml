@@ -6,7 +6,7 @@ metadata:
 spec:
   template:
     spec:
-      # 1. Init container to download sops binary into shared volume
+      # 1. Init Containers
       initContainers:
         - name: install-sops
           image: alpine:latest
@@ -19,12 +19,20 @@ spec:
           volumeMounts:
             - mountPath: /custom-tools
               name: custom-tools
+
         - name: copyutil
           image: quay.io/argoproj/argocd:v3.4.5
-      # 2. Add CMP sidecar container
+          command: [sh, -c]
+          args:
+            - /bin/cp /usr/local/bin/argocd /var/run/argocd/argocd && /bin/ln -sf /var/run/argocd/argocd /var/run/argocd/argocd-cmp-server
+          volumeMounts:
+            - mountPath: /var/run/argocd
+              name: var-files
+
+      # 2. Sidecar Container
       containers:
-        - name: cmp-sops
-          image: quay.io/argoproj/argocd:v3.4.5 # Match your running ArgoCD version
+        - name: cmp-sops-plugin
+          image: quay.io/argoproj/argocd:v3.4.5
           command: [/var/run/argocd/argocd-cmp-server]
           env:
             - name: SOPS_AGE_KEY_FILE
@@ -43,14 +51,21 @@ spec:
             - mountPath: /home/argocd/cmp-server/config/plugin.yaml
               name: cmp-sops-plugin
               subPath: plugin.yaml
-            - mountPath: /app/config/sops/age
+            - mountPath: /var/run/secrets/sops
               name: sops-age-key
-      # 3. Mount necessary volumes
+
+      # 3. Volumes Required by Sidecar & Init Containers
       volumes:
-        - name: cmp-sops-plugin-config
+        - name: cmp-sops-plugin
           configMap:
             name: cmp-sops-plugin
         - name: custom-tools
+          emptyDir: {}
+        - name: plugins
+          emptyDir: {}
+        - name: var-files
+          emptyDir: {}
+        - name: tmp
           emptyDir: {}
         - name: sops-age-key
           secret:
