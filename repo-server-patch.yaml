@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: argocd-repo-server
+  namespace: argocd
+spec:
+  template:
+    spec:
+      # 1. Init container to download sops binary into shared volume
+      initContainers:
+        - name: install-sops
+          image: alpine:latest
+          command: [/bin/sh, -c]
+          args:
+            - |
+              SOPS_VER="v3.9.0"
+              wget -O /custom-tools/sops https://github.com/getsops/sops/releases/download/${SOPS_VER}/sops-${SOPS_VER}.linux.arm64
+              chmod +x /custom-tools/sops
+          volumeMounts:
+            - mountPath: /custom-tools
+              name: custom-tools
+        - name: copyutil
+          image: quay.io/argoproj/argocd:v3.4.5
+      # 2. Add CMP sidecar container
+      containers:
+        - name: cmp-sops
+          image: quay.io/argoproj/argocd:v3.4.5 # Match your running ArgoCD version
+          command: [/var/run/argocd/argocd-cmp-server]
+          env:
+            - name: SOPS_AGE_KEY_FILE
+              value: /var/run/secrets/sops/keys.txt
+            - name: PATH
+              value: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/custom-tools
+          volumeMounts:
+            - mountPath: /var/run/argocd
+              name: var-files
+            - mountPath: /home/argocd/cmp-server/plugins
+              name: plugins
+            - mountPath: /tmp
+              name: tmp
+            - mountPath: /custom-tools
+              name: custom-tools
+            - mountPath: /home/argocd/cmp-server/config/plugin.yaml
+              name: cmp-sops-plugin
+              subPath: plugin.yaml
+            - mountPath: /app/config/sops/age
+              name: sops-age-key
+      # 3. Mount necessary volumes
+      volumes:
+        - name: cmp-sops-plugin-config
+          configMap:
+            name: cmp-sops-plugin
+        - name: custom-tools
+          emptyDir: {}
+        - name: sops-age-key
+          secret:
+            secretName: sops-age

@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cmp-sops-plugin
+  namespace: argocd
+data:
+  plugin.yaml: |
+    apiVersion: argoproj.io/v1alpha1
+    kind: ConfigManagementPlugin
+    metadata:
+      name: sops-directory
+    spec:
+      discover:
+        find:
+          glob: "**/*.sops.yaml"
+      generate:
+        command:
+          - /bin/sh
+          - -c
+          - |
+            for file in *.yaml *.yml; do
+              [ -f "$file" ] || continue
+              if grep -q "sops:" "$file"; then
+                /custom-tools/sops -d "$file"
+              else
+                cat "$file"
+              fi
+              echo "---"
+            done
