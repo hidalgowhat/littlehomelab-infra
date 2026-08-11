@@ -8,7 +8,7 @@ data:
     apiVersion: argoproj.io/v1alpha1
     kind: ConfigManagementPlugin
     metadata:
-      name: sops-directory
+      name: sops-yaml-v1.0
     spec:
       discover:
         find:
