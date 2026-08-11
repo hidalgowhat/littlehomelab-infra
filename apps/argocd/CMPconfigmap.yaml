@@ -18,12 +18,25 @@ data:
           - /bin/sh
           - -c
           - |
-            for file in *.yaml *.yml; do
-              [ -f "$file" ] || continue
-              if grep -q "sops:" "$file"; then
-                /custom-tools/sops -d "$file"
-              else
-                cat "$file"
-              fi
-              echo "---"
-            done
+            # 1. If Kustomize is present, decrypt SOPS files in-place and run kustomize build
+            if [ -f "kustomization.yaml" ] || [ -f "kustomization.yml" ]; then
+              for file in *.yaml *.yml; do
+                [ -f "$file" ] || continue
+                if grep -q "sops:" "$file"; then
+                  /custom-tools/sops -d "$file" > "$file.dec" && mv "$file.dec" "$file"
+                fi
+              done
+              kustomize build .
+
+            # 2. Otherwise, fall back to plain raw manifest output
+            else
+              for file in *.yaml *.yml; do
+                [ -f "$file" ] || continue
+                if grep -q "sops:" "$file"; then
+                  /custom-tools/sops -d "$file"
+                else
+                  cat "$file"
+                fi
+                echo "---"
+              done
+            fi
