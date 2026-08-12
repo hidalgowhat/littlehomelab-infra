@@ -12,14 +12,18 @@ data:
     spec:
       discover:
         find:
-          glob: "**/*.sops.yaml"
+          command:
+            - /bin/sh
+            - -c
+            - |
+              grep -r -q "sops:" . 2>/dev/null || [ -f "kustomization.yaml" ] || [ -f "kustomization.yml" ]
       generate:
         command:
           - /bin/sh
           - -c
           - |
             set -e
-            # 1. If Kustomize is present, decrypt ONLY *.sops.yaml files and run kustomize build
+            # 1. If Kustomize is present, decrypt ONLY *.sops.yaml/*.sops.yml files and run kustomize build
             if [ -f "kustomization.yaml" ] || [ -f "kustomization.yml" ]; then
               for file in *.sops.yaml *.sops.yml; do
                 [ -f "$file" ] || continue
