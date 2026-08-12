@@ -21,6 +21,13 @@ spec:
         - /status
         - /metadata/resourceVersion
         - /metadata/generation
+    - group: ""
+      kind: Secret
+      name: argocd-secret
+      jsonPointers:
+        - /data/server.secretkey
+        - /data/admin.password
+        - /data/admin.passwordMtime
   syncPolicy:
     automated:
       prune: true
