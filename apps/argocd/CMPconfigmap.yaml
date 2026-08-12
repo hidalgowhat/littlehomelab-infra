@@ -12,26 +12,19 @@ data:
     spec:
       discover:
         find:
-          command:
-            - /bin/sh
-            - -c
-            - |
-              grep -r -q "sops:" . 2>/dev/null || [ -f "kustomization.yaml" ] || [ -f "kustomization.yml" ]
+          command: ["true"]
       generate:
         command:
           - /bin/sh
           - -c
           - |
             set -e
-            # 1. If Kustomize is present, decrypt ONLY *.sops.yaml/*.sops.yml files and run kustomize build
             if [ -f "kustomization.yaml" ] || [ -f "kustomization.yml" ]; then
               for file in *.sops.yaml *.sops.yml; do
                 [ -f "$file" ] || continue
                 /custom-tools/sops -d "$file" > "${file}.tmp" && mv "${file}.tmp" "$file"
               done
               kustomize build .
-
-            # 2. Otherwise, fall back to plain raw manifest output
             else
               for file in *.yaml *.yml; do
                 [ -f "$file" ] || continue
