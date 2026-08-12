@@ -10,9 +10,11 @@ data:
     metadata:
       name: sops-yaml-v1.0
     spec:
+      version: v1.0
       discover:
         find:
-          command: ["true"]
+          command: ["/bin/sh", "-c"]
+          args: ["find . -maxdepth 2 -type f \\( -name '*.yaml' -o -name '*.yml' \\) -exec grep -l 'sops:' {} +"]
       generate:
         command:
           - /bin/sh
@@ -20,22 +22,21 @@ data:
           - |
             set -e
             if [ -f "kustomization.yaml" ] || [ -f "kustomization.yml" ]; then
-              for file in *.sops.yaml *.sops.yml; do
-                [ -f "$file" ] || continue
-                /custom-tools/sops -d "$file" > "${file}.tmp" && mv "${file}.tmp" "$file"
+              # Decrypt any YAML file containing SOPS metadata in-place before running kustomize
+              find . -type f \( -name "*.yaml" -o -name "*.yml" \) | while read -r file; do
+                if grep -q 'sops:' "$file" 2>/dev/null; then
+                  /custom-tools/sops -d "$file" > "${file}.tmp" && mv "${file}.tmp" "$file"
+                fi
               done
               kustomize build .
             else
-              for file in *.yaml *.yml; do
-                [ -f "$file" ] || continue
-                case "$file" in
-                  *.sops.yaml|*.sops.yml)
-                    /custom-tools/sops -d "$file"
-                    ;;
-                  *)
-                    cat "$file"
-                    ;;
-                esac
+              # Plain YAML manifest rendering
+              find . -maxdepth 1 -type f \( -name "*.yaml" -o -name "*.yml" \) | while read -r file; do
+                if grep -q 'sops:' "$file" 2>/dev/null; then
+                  /custom-tools/sops -d "$file"
+                else
+                  cat "$file"
+                fi
                 echo "---"
               done
             fi
