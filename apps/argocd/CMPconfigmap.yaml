@@ -24,7 +24,7 @@ data:
             if [ -f "kustomization.yaml" ] || [ -f "kustomization.yml" ]; then
               # Decrypt only files containing both ENC[ and sops: metadata in-place before running kustomize
               find . -type f \( -name "*.yaml" -o -name "*.yml" \) | while read -r file; do
-                if grep -q 'ENC\[' "$file" 2>/dev/null && grep -q 'sops:' "$file" 2>/dev/null; then
+                if grep -q 'ENC\[' "$file" 2>/dev/null && grep -q '^sops:' "$file" 2>/dev/null; then
                   /custom-tools/sops -d "$file" > "${file}.tmp" && mv "${file}.tmp" "$file"
                 fi
               done
