@@ -34,3 +34,4 @@ spec:
       selfHeal: true
     syncOptions:
       - Replace=true
+      - RespectIgnoreDifferences=true
