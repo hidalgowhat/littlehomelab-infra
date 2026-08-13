@@ -1,0 +1,59 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: uptime-kuma
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://helm.k8s.at
+    chart: uptime-kuma
+    targetRevision: 2.1.8
+    helm:
+      values: |
+        replicaCount: 1
+
+        service:
+          type: ClusterIP
+          port: 3001
+
+        ingress:
+          enabled: true
+          className: traefik
+          annotations:
+            cert-manager.io/cluster-issuer: letsencrypt-prod
+          hosts:
+            - host: status.littlehomelab.com
+              paths:
+                - path: /
+                  pathType: Prefix
+          tls:
+            - secretName: uptime-kuma-tls
+              hosts:
+                - status.littlehomelab.com
+
+        persistence:
+          enabled: true
+          storageClass: ""
+          accessMode: ReadWriteOnce
+          size: 4Gi
+
+        resources:
+          limits:
+            cpu: 200m
+            memory: 256Mi
+          requests:
+            cpu: 50m
+            memory: 128Mi
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: monitoring
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
