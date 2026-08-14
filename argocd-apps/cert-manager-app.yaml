@@ -16,6 +16,36 @@ spec:
         crds:
           enabled: true
           keep: true
+
+        # cert-manager controller pod
+        resources:
+          requests:
+            cpu: 10m
+            memory: 32Mi
+          limits:
+            cpu: 100m
+            memory: 128Mi
+
+        # Webhook pod
+        webhook:
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              cpu: 100m
+              memory: 64Mi
+
+        # CA Injector pod
+        cainjector:
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              cpu: 100m
+              memory: 128Mi
+
   destination:
     server: https://kubernetes.default.svc
     namespace: cert-manager
