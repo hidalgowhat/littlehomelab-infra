@@ -46,6 +46,8 @@ spec:
               cpu: 100m
               memory: 128Mi
 
+        startupapicheck:
+          enabled: false
   destination:
     server: https://kubernetes.default.svc
     namespace: cert-manager
