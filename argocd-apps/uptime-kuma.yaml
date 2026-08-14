@@ -8,9 +8,9 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://louislam.github.io/uptime-kuma/helm_repo
+    repoURL: https://chrisbsmith.github.io/uptime-kuma-helm/
     chart: uptime-kuma
-    targetRevision: 2.1.8
+    targetRevision: 2.18.0
     helm:
       values: |
         replicaCount: 1
