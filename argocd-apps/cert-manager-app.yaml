@@ -46,8 +46,15 @@ spec:
               cpu: 100m
               memory: 128Mi
 
-        startupAPICheck:
+        startupapicheck:
           enabled: false
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              cpu: 100m
+              memory: 64Mi
   destination:
     server: https://kubernetes.default.svc
     namespace: cert-manager
