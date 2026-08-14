@@ -21,9 +21,12 @@ spec:
 
         ingress:
           enabled: true
+          ingressClassName: traefik
           className: traefik
           annotations:
-            cert-manager.io/cluster-issuer: letsencrypt-prod
+            cert-manager.io/cluster-issuer: letsencrypt-cloudflare
+            traefik.ingress.kubernetes.io/router.entrypoints: websecure
+            traefik.ingress.kubernetes.io/router.tls: "true"
           hosts:
             - host: status.littlehomelab.com
               paths:
@@ -33,7 +36,6 @@ spec:
             - secretName: uptime-kuma-tls
               hosts:
                 - status.littlehomelab.com
-
         persistence:
           enabled: true
           storageClass: ""
