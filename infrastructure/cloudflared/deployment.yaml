@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
         - name: cloudflared
-          image: cloudflare/cloudflared:2024.2.1 # Pin to a stable version
+          image: cloudflare/cloudflared:2026.7.0 # Changed to newer stable version
           args:
             - tunnel
             - --no-autoupdate
