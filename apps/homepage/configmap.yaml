@@ -16,6 +16,14 @@ data:
         - ArgoCD:
             href: "https://argocd.littlehomelab.com"
             description: "GitOps Deployment Controller"
+        - Cluster Status:
+            icon: uptime-kuma.png
+            href: https://status.littlehomelab.com
+            description: "Homelab Status Page"
+            widget:
+              type: uptimekuma
+              url: http://uptime-kuma.monitoring.svc.cluster.local:3001 # Internal K3s Service URL
+              slug: main
         - Grafana:
             icon: "grafana.svg"
             href: "https://grafana.littlehomelab.com"
