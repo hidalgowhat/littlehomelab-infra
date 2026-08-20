@@ -8,9 +8,9 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: 'https://github.com/<your-username>/<your-repo>.git'
+    repoURL: 'https://github.com/hidalgowhat/littlehomelab-infra.git'
     targetRevision: HEAD
-    path: apps/pihole # Path to folder containing your 5 YAMLs + kustomization.yaml
+    path: apps/pihole
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: pihole
