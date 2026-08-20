@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: <APP_NAME>
+  namespace: <APP_NAME>
+  labels:
+    app.kubernetes.io/name: <APP_NAME>
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: <APP_NAME>
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: <APP_NAME>
+    spec:
+      containers:
+      - name: <APP_NAME>
+        image: <DOCKER_IMAGE>:<TAG>
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: TZ
+          value: "America/Los_Angeles"
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: <APP_NAME>-secret
+              key: DB_PASSWORD
+        ports:
+        - containerPort: <CONTAINER_PORT>
+          name: http
+          protocol: TCP
+        volumeMounts:
+        - name: app-data
+          mountPath: /var/lib/<APP_NAME>/data
+      volumes:
+      - name: app-data
+        persistentVolumeClaim:
+          claimName: <APP_NAME>-data-pvc

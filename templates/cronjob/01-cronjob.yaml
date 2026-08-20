@@ -1,0 +1,63 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: <APP_NAME>-s3-backup
+  namespace: <APP_NAME>
+  labels:
+    app.kubernetes.io/name: <APP_NAME>-s3-backup
+    app.kubernetes.io/component: backup
+spec:
+  # Standard Cron syntax: Runs daily at 2:00 AM UTC
+  schedule: "0 2 * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 5
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: <APP_NAME>-s3-backup
+        spec:
+          restartPolicy: OnFailure
+          containers:
+          - name: backup-runner
+            image: amazon/aws-cli:latest
+            env:
+            - name: S3_BUCKET
+              value: "s3://my-homelab-backups/<APP_NAME>"
+            - name: S3_ENDPOINT_URL
+              value: "https://<ACCOUNT_ID>.r2.cloudflarestorage.com" # Optional: for MinIO or R2
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: s3-credentials
+                  key: AWS_ACCESS_KEY_ID
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: s3-credentials
+                  key: AWS_SECRET_ACCESS_KEY
+            - name: DB_HOST
+              value: "<APP_NAME>-service"
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: <APP_NAME>-secret
+                  key: DB_PASSWORD
+            command:
+            - /bin/sh
+            - -c
+            - |
+              set -e
+              TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+              BACKUP_FILE="/tmp/backup-${TIMESTAMP}.sql.gz"
+
+              echo "Starting database export..."
+              # Example using pg_dump/mysqldump (or sqlite3 .dump for sqlite-backed apps)
+              # pg_dump -h $DB_HOST -U postgres | gzip > $BACKUP_FILE
+
+              echo "Uploading to S3..."
+              aws s3 cp $BACKUP_FILE $S3_BUCKET/ --endpoint-url $S3_ENDPOINT_URL
+
+              echo "Backup completed successfully!"
