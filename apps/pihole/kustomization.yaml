@@ -6,6 +6,6 @@ namespace: pihole
 resources:
   - 01-namespace.yaml
   - 02-pvc.yaml
-  - 03-secret.yaml
+  - 03-secret.sops.yaml
   - 04-deployment.yaml
   - 05-service.yaml
