@@ -32,9 +32,11 @@ spec:
           value: "1.1.1.1;9.9.9.9"
         ports:
         - containerPort: 53
+          hostPort: 53
           name: dns-tcp
           protocol: TCP
         - containerPort: 53
+          hostPort: 53
           name: dns-udp
           protocol: UDP
         - containerPort: 80
