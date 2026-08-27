@@ -15,15 +15,6 @@ spec:
       labels:
         app: pihole
     spec:
-      initContainers:
-      - name: copy-custom-dnsmasq
-        image: busybox:1.36
-        command: ['sh', '-c', 'cp /tmp/custom-dnsmasq/99-wildcard.conf /etc/dnsmasq.d/99-wildcard.conf']
-        volumeMounts:
-        - name: custom-dnsmasq-volume
-          mountPath: /tmp/custom-dnsmasq
-        - name: dnsmasq-dir
-          mountPath: /etc/dnsmasq.d
       containers:
       - name: pihole
         image: pihole/pihole:latest
@@ -56,7 +47,7 @@ spec:
         volumeMounts:
         - name: pihole-etc
           mountPath: /etc/pihole
-        - name: dnsmasq-dir
+        - name: custom-dnsmasq-volume
           mountPath: /etc/dnsmasq.d
       volumes:
       - name: pihole-etc
@@ -65,5 +56,3 @@ spec:
       - name: custom-dnsmasq-volume
         configMap:
           name: pihole-custom-dnsmasq
-      - name: dnsmasq-dir
-        emptyDir: {}
