@@ -28,6 +28,14 @@ data:
             icon: "grafana.svg"
             href: "https://grafana.littlehomelab.com"
             description: "Cluster Resource Metrics"
+        - Pi-hole:
+            icon: pi-hole.svg
+            href: http://pihole.littlehomelab.com/admin
+            description: Local DNS & Ad Blocking
+            widget:
+              type: pihole
+              url: http://pihole.pihole.svc.cluster.local:80
+              key: "${PIHOLE_API_PASSWORD}"
     - Applications:
         - Utility Ping:
             icon: "pingdom.svg"
@@ -38,7 +46,9 @@ data:
             icon: si-cilium
             href: "http://hubble.littlehomelab.com"
             description: eBPF Network Observability & Traffic Flows
-            siteMonitor: http://hubble.littlehomelab.com
+            widget:
+              type: hubble
+              url: http://hubble-ui.kube-system.svc.cluster.local
 
   bookmarks.yaml: |
     - Homelab Dev:
