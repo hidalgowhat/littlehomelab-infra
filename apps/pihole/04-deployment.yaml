@@ -43,12 +43,13 @@ spec:
         volumeMounts:
         - name: pihole-etc
           mountPath: /etc/pihole
-        - name: dnsmasq-etc
-          mountPath: /etc/dnsmasq.d
+        - name: custom-dnsmasq-volume
+          mountPath: /etc/dnsmasq.d/99-wildcard.conf
+          subPath: 99-wildcard.conf
       volumes:
       - name: pihole-etc
         persistentVolumeClaim:
           claimName: pihole-etc-pvc
-      - name: dnsmasq-etc
-        persistentVolumeClaim:
-          claimName: pihole-dnsmasq-pvc
+      - name: custom-dnsmasq-volume
+        configMap:
+          name: pihole-custom-dnsmasq
