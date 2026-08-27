@@ -9,3 +9,4 @@ resources:
   - 03-secret.sops.yaml
   - 04-deployment.yaml
   - 05-service.yaml
+  - pihole-custom-dnsmasq-configmap.yaml
