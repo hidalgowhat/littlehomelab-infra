@@ -7,3 +7,4 @@ data:
   99-wildcard.conf: |
     address=/littlehomelab.com/172.69.115.211
     address=/littlehomelab.com.svc.cluster.local/172.69.115.211
+    local=/littlehomelab.com/
