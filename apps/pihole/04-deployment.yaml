@@ -39,7 +39,7 @@ spec:
           value: "0.0.0.0"
         - name: FTLCONF_dns_upstreams
           value: "1.1.1.1;9.9.9.9"
-        - name: FTLCONF_files_dnsmasq_d
+        - name: FTLCONF_files_etc_dnsmasq_d
           value: "true"
         ports:
         - containerPort: 53
