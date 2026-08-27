@@ -39,8 +39,8 @@ spec:
           value: "0.0.0.0"
         - name: FTLCONF_dns_upstreams
           value: "1.1.1.1;9.9.9.9"
-        - name: FTLCONF_dns_config
-          value: "address=/littlehomelab.com/172.69.115.211;address=/littlehomelab.com.svc.cluster.local/172.69.115.211;local=/littlehomelab.com/"
+        - name: FTLCONF_files_dnsmasq_d
+          value: "true"
         ports:
         - containerPort: 53
           hostPort: 53
