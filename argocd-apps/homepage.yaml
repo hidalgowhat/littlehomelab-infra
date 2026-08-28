@@ -12,7 +12,16 @@ spec:
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: homepage
+  ignoreDifferences:
+    - group: ""
+      kind: Secret
+      name: pihole-secret
+      jsonPointers:
+        - /data
+        - /metadata/annotations
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
