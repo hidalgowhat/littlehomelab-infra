@@ -34,8 +34,9 @@ data:
             description: Local DNS & Ad Blocking
             widget:
               type: pihole
-              url: http://pihole.pihole.svc.cluster.local:80
+              url: http://pihole-service.pihole.svc.cluster.local:80
               key: "${PIHOLE_API_PASSWORD}"
+              version: 6
     - Applications:
         - Utility Ping:
             icon: "pingdom.svg"
@@ -46,9 +47,7 @@ data:
             icon: si-cilium
             href: "http://hubble.littlehomelab.com"
             description: eBPF Network Observability & Traffic Flows
-            widget:
-              type: hubble
-              url: http://hubble-ui.kube-system.svc.cluster.local
+            siteMonitor:  http://hubble-ui.kube-system.svc.cluster.local
 
   bookmarks.yaml: |
     - Homelab Dev:
