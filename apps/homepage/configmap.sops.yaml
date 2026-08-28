@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+    name: homepage-config
+    namespace: homepage
+data:
+    settings.yaml: ENC[AES256_GCM,data:pzLAJsgrK1lL5O6P57ztOEG0xpvnjZYjXtyoWkhNVQWK86HC+zUMCl41pVb6wY6zsdjq6jPqF1qKPLkPyXS9uxf4p8TYCB6Zgj1fArAJUg7TTBahu6KMtlkBg5QutXDbbGHTSA==,iv:/ZXAaQ5iLz2bhrHo5e2Ny2IIrnlsu6FxZLdEKS968Zs=,tag:wMdiLTgoliODCIxuN4u+Uw==,type:str]
+    services.yaml: ENC[AES256_GCM,data:5b4fTkSsry/Z+KlgaS3RC9VvZVEkgVoH2UoGDx3rCohrEy4eGr+g/r3nnR9sJoI5nJ4LT4YOX5qc19MD6JNytxrBn6UuSLZoKZRWQnnB9MO2a7jcvSa0Wa97MijgEL6O88QRV2EgS3MIlnVJPvwZ/ftEnvBTjbuDUaRlfd7cva2qeHCRm3INpIIor6Ey+ASZ0AUQlP4Z4b7B9tk15J7qPrxc0Y33P5Dv0+dLH+Lo3EY5EzTJGxF2WsZWecEKCbZ+YiNBRhcowSwFFKG5NLxEdOtdUw9sluxj3yA5vuiGn3H8kFdpN813UvySK36OHWWn4uvUdkdEHypI2u0f1FP7OUWEoFoqW5IGzjlM8Gh/OHIv+CQQjXTShvr+/u7cuccFK6mLCVNJvoRX1ZUEpfv4GXyC3CYkBviiyi5u9vcf6i8Xnjcxzisnl+3lRo8NhVRKgwNO05mu43nbAGuwxRYBcalXs4UqAnGYz3PC7iXnwSanNzb/3mLjRi8oc9vsA1oRYAux7IhGVxhAoZQJMCVWEgTwHb0GPxJP9wEuyWIFKB1ytj9nRfNo+b/y9EsVN9IPnth6x6ebEFqiOYKuJM2AlyjXuXHTtC+IY77vR5HhOhXW753OvBzTkgblljW4dsCd4Az7tdWQvVcPgGje4gvPY9OGht96k3vGO46w0atiab7s7pXxy7h2Gg/jFSxel1PwQzhqRrNMK5hyKXFM2hbpWgrrTctvqMbRTWwkll+9NNcRYRCvTLIzTrey4XEBuCv9ASjbsuSyoRd19MrTYvHPT8XIAud47kP7dmOJ55A9wdR6EVOt00L471gqsaEy2fqo489xL98eSRm9/mL9DAbx6y/Z4SajwLWXKVBTQzNkZtuHfPjwuq4p2YF2FijvSLGkbvr6dq4O7VfoSRKh19++r08BkFhjfCbIi7wNVrUePzcdyNSKANQ5Rf14zCmn7ou/SAAdGbZ07kwQDZbGzR6LqyPf1wE4TzhIw7uyhZRHGLJTIJLhWOeKY/kEJlPWQ2kirCPsyl0o4ZdKxDkXENGy29TZpd7Q1WxLAASzoIHNeZ5AGLrGn6F/vCel/yGzC1U7C9A7egDmzcTo/2Zay53puchPnubOwQgx8EyvkQue0iW4hDs0gbCVLDxvZZTmklrOiwpCuOL6Dk1GKpX9fPmiFSa8VILhm9pZWlO8o4VobyLSPQ3rVAesD9PF48YCF1AZjiIbG6dGYL/ngzGTKcECnksIVlzYgkhG46qQ3ze9geceVhue5F1Q9PGhNvvCv71Uy2vK8rTUoCSvTEdyh0bRFOojTwoZFQcEB7+nl+DfQNnpQus7Qaotg/jw4ofYSLrdSLXNOFnHS3DOZCo+C2NztM0h46lMgtFJD1wE74hecWHGJXfDpUoeNhgwdRRAUq3PDmAkFGb0sPpU0QGhdJwXa2gxSdlQ7BeUh90BkJBIjKGwYCW/tiJm2uVuaFGYY145Yq5iqNNw3w40V+X88V2in34IwhwHNOi0Kz3dYSAUg4kQibcBX2YS3xgzSoETaIw20UcHDEJCBguoZ+w4O+s2HsP4BxlViI2yA3jVOdwTeA+11bCgR/Bftf8HEJFIGlOFXo2juKDWmjsK8p7OYAXhMz18dEu8y7w/0B7ozL1yduW+YSmB+tJQLlsyYXhmK+KIOq3Bvg1qejJd+nynnzp/6x5IwVlfsdxmAasUMF7UHSAdq77XqlRhIPapLi4jhjz7qQ==,iv:q6yHX3O4hEXjavawt+sXMkGqrNxe57KnHOStd4wwHJs=,tag:AjXgPbFE4akTwRsXmCkO6g==,type:str]
+    bookmarks.yaml: ENC[AES256_GCM,data:EkkmQUcNgHDm3bRUveLH5gdDNo3wXXfsQAJWmrvEd0CYJblzFrCCzn+24qXMl+c9txNImzj2O7qSfJqQJhpLZVan+KrKE0jDBsfH3/bNdYhye2/sKSwiXcPXk9p+mh4nZezITY3libClZWik7Gvjkc0Y/e7nK+KjJ58OhXt/gqUfXeV8ePr7Oe7ynTw597CnUTTrd4ItsG8TdGROCchL1dRMppHZseKnII6ZiqHuLpXOuhjJphaK/Z7IjIJ8akZbrC0zackdV/3HanGFgNmRZWGbnZRCbbV2LcJ82noc7xN4AaN7Krq/DbY=,iv:21BO9QTZRH0uBkAD87pUy9CJzQUQbP9PKZX3kZYBlj0=,tag:F3veJGdYD7ZT2SxlVY/NMg==,type:str]
+    widgets.yaml: ENC[AES256_GCM,data:dLPrHk2agyTUMOo+fK3yFB22sfC5WGLqPl9i/dwnNUzPzDXB69LpFCi/OqyMsGOrB15hCtC1I1u/zWmoVr2VRiwZgVr5ob0YIoVxOeZH296+Kg+mnA0T,iv:avZnEWmqLRTD4XH8hISNgjXQ9PK6P1HIoSxqRTvsGKs=,tag:kffkdfbvdE6HjEvdZykevQ==,type:str]
+    #ENC[AES256_GCM,data:bbT4Ajxs0ylIiZx0WQKK4EIMtmtZC8yCE0sKJC41CIy//EPPnoUEj2odcW6DwBV7ClhXuOqRDyle/nz5AOg+xXw=,iv:2ccRNFeczSQzhjBWVxva4QscfYBFOYnabu7Q9V099/8=,tag:3PPIMWQlpF6FrsqocB/Etg==,type:comment]
+    kubernetes.yaml: ""
+sops:
+    kms: []
+    gcp_kms: []
+    azure_kv: []
+    hc_vault: []
+    age:
+        - recipient: age17shk2n5pcma33mvzapxh5z48phjhnpskm9juxdvg8aepzn59ja2q6fafg4
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB4UFFGNEdGMDBDRm4vZVk2
+            WnRYMm5RRmpmdHNHcFJpZFg0ZHQza3dhbzI4CjJ5TFNIZkYzaVFJLy9oQkV3K1Jt
+            VzltVHRjbEhxTHZKdmFLeTY4SWxOdzQKLS0tIFZjTGJLaGZZYy92MzVVSkZ3N0RZ
+            blNJeVZLTmtla1E4eDdUdUJnV0p1dlEK1WlIt3Kpik0tX3fVGWcs65EcyE23ORfg
+            nvJM7ZxP6viHKvpvbgnOhj7/ZY5PgeDqT2E3k3kucoxUrIqbMcGIDw==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2026-08-28T07:42:35Z"
+    mac: ENC[AES256_GCM,data:ZFKJq9rQ/Otv9uO4pluKbjAov/Vz28Cb96D52bulW6WuQdY7fTc2xo99hnh7YwMgc179w+4yDMafOqW5w6spF1foX+GedWXlo0kOYL1AEUjVblp/StyjqAF6OIKD2nbIDizRKrs/F4mZ1hKagS9Yf4DYKihoDHx5UbEUQFxraI4=,iv:0MmadLLBVBJykoWv2d2ina59qa5yDus/PCE1Vt6Ozl0=,tag:XUn/cO0Dpm22gWJHZ5LOYw==,type:str]
+    pgp: []
+    encrypted_regex: ^(data|stringData)$
+    version: 3.9.0
