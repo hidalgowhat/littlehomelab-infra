@@ -35,7 +35,7 @@ data:
             widget:
               type: pihole
               url: http://pihole-service.pihole.svc.cluster.local:80
-              key: "${PIHOLE_API_PASSWORD}"
+              key: "8ektPA4WBwsJM+vCTL7JP0biOsdGxWb+hnY7gH2enco="
               version: 6
     - Applications:
         - Utility Ping:
