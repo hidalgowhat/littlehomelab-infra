@@ -3,7 +3,7 @@ kind: Ingress
 metadata:
   name: wikijs
   namespace: wiki
-  annotationns:
+  annotations:
     traefik.ingress.kubernetes.io/router.entrypoints: web
 spec:
   rules:
