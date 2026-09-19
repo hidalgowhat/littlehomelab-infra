@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wikijs
+  namespace: wiki
+  labels:
+    app.kubernetes.io/name: wiki.js
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: wiki.js
+  template:
+    metadata: 
+      labels:
+        app.kubernetes.io/name: wiki.js
+    spec:
+      containers:
+      - name: wikijs
+        image: requarks/wiki:2
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: TZ
+          value: "America/Los_Angeles"
+        - name: DB_TYPE
+          value: postgres
+        - name: DB_HOST
+          value: postgres
+        - name: DB_PORT
+          value: "5432"
+        - name: DB_NAME
+          valueFrom:
+            secretKeyRef:
+              name: wiki-db-secret
+              key: POSTGRES_DB
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: wiki-db-secret
+              key: POSTGRES_USER
+        - name: DB_PASS
+          valueFrom:
+            secretKeyRef:
+              name: wiki-db-secret
+              key: POSTGRES_PASSWORD
+        ports:
+        - containerPort: 3000
+          name: http
+          protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: wikijs
+  namespace: wiki
+  labels:
+    app.kubernetes.io/name: wiki.js
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: wiki.js
+  ports:
+  - port: 3000
+    targetPort: 3000
+    protocol: TCP
+    name: http
