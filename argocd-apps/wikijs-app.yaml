@@ -1,0 +1,22 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: wikijs
+  namespace: argocd
+  finalizers: 
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/hidalgowhat/littlehomelab-infra.git'
+    targetRevision: HEAD
+    path: apps/wiki.js
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: wiki
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
