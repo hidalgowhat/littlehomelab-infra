@@ -1,0 +1,17 @@
+all:
+  hosts:
+    localhost:
+      ansible_connection: local
+workers:
+  hosts:
+    pi-4-8GB:
+      ansible_host: 172.69.115.202
+    pi-4-4GB:
+      ansible_host: 172.69.115.203
+    pi-4-2GB:
+      ansible_host: 172.69.115.204
+control_plane:
+  hosts:
+    localhost:
+      ansible_connection: local
+    

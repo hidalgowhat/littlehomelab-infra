@@ -1,0 +1,92 @@
+---
+- name: Gather cluster hardware information
+  hosts: all
+  gather_facts: yes
+  tasks:
+    - name: Get CPU core temp
+      ansible.builtin.command: vcgencmd measure_temp
+      register: cpu_temp
+      changed_when: false
+
+    - name: Get CPU clock speed
+      ansible.builtin.command: vcgencmd measure_clock arm
+      register: cpu_clock
+      changed_when: false
+
+    - name: Check for power and thermal issues (0x0 means no issues)
+      ansible.builtin.command: vcgencmd get_throttled
+      register: throttled
+      changed_when: false
+
+    - name: Output get_throttled result depending on the value
+      ansible.builtin.set_fact:
+        throttled_status: >-
+          {% if throttled.stdout == 'throttled=0x0' %}
+            No power or thermal issues detected.
+          {% else %}
+            Power or thermal issues detected: {{ throttled.stdout }}
+          {% endif %}
+
+    - name: Get available disk space
+      ansible.builtin.shell: df -h --output=avail / | tail -n 1 | tr -d ' '
+      register: free_disk
+      changed_when: false
+
+    - name: Display hardware information
+      ansible.builtin.debug:
+        msg:
+          - "=============================================="
+          - "Hostname: {{ ansible_hostname }}"
+          - "OS: {{ ansible_distribution }} {{ ansible_distribution_version }}"
+          - "CPU: {{ ansible_processor[0] }} ({{ ansible_processor_cores }} cores)"
+          - "CPU Temp: {{ cpu_temp.stdout.split('=')[1] }}"
+          - "CPU Clock: {{ ((cpu_clock.stdout.split('=')[1] | int) / 1000000) | round(0) }} MHz"
+          - "Power/Thermal Status: {{ throttled_status }}"
+          - "Memory : {{ ansible_memfree_mb }} MB / {{ ansible_memtotal_mb }} MB"
+          - "Swap : {{ ansible_memory_mb.swap.free }} MB / {{ ansible_memory_mb.swap.total }} MB"
+          - "Disk Space Available: {{ free_disk.stdout }}"
+          - "================================================"
+
+- name: Gather k3s cluster information
+  hosts: control_plane
+  gather_facts: no
+  tasks:
+    - name: Get k3s version
+      ansible.builtin.command: k3s --version
+      register: k3s_version
+      changed_when: false
+
+    - name: Get k3s node status
+      ansible.builtin.command: kubectl get nodes -o wide
+      register: k3s_nodes
+      changed_when: false
+
+    - name: Check status of CoreDNS, Traefik, and local-path-provisioner pods
+      ansible.builtin.command: kubectl get pods -n kube-system
+      register: k3s_pods
+      changed_when: false
+
+    - name: Check CPU and RAM utilization of k3s nodes
+      ansible.builtin.command: kubectl top nodes
+      register: k3s_node_resources
+      changed_when: false
+    
+    - name: Check CPU and RAM utilization of k3s pods
+      ansible.builtin.shell: kubectl top pods -A --sort-by=memory | head -n 10
+      register: k3s_pod_resources
+      changed_when: false
+
+    - name: Display k3s cluster information
+      ansible.builtin.debug:
+        msg:
+          - "=============================================="
+          - "k3s Version: {{ k3s_version.stdout }}"
+          - "k3s Nodes Status:"
+          - "{{ k3s_nodes.stdout }}"
+          - "CoreDNS, Traefik, and local-path-provisioner Status:"
+          - "{{ k3s_pods.stdout }}"
+          - "Node Resources:"
+          - "{{ k3s_node_resources.stdout }}"
+          - "Pod Resources:"
+          - "{{ k3s_pod_resources.stdout }}"
+          - "================================================"

@@ -1,0 +1,39 @@
+---
+- name: Update Debian packages across all cluster nodes
+  hosts: all
+  gather_facts: yes
+  tasks:
+    - name: Update apt cache and upgrade packages
+      ansible.builtin.apt:
+        update_cache: yes
+        upgrade: dist
+      become: yes
+
+    - name : Check if a reboot is required after package upgrade
+      ansible.builtin.stat:
+        path: /var/run/reboot-required
+      register: reboot_required_file
+
+- name : Reboot control plane node if required
+  hosts: control_plane
+  gather_facts: yes
+  tasks:
+    - name: Reboot control plane node
+      ansible.builtin.reboot:
+        msg: "Rebooting control plane after package upgrade"
+        pre_reboot_delay: 5
+        post_reboot_delay: 15
+      when: reboot_required_file.stat.exists
+      become: yes
+
+- name: Reboot worker nodes sequentially if required
+  hosts: workers
+  serial: 1
+  tasks:
+    - name: Reboot worker node
+      ansible.builtin.reboot:
+        msg: "Rebooting worker node after package upgrade"
+        pre_reboot_delay: 5
+        post_reboot_delay: 30
+      when: reboot_required_file.stat.exists
+      become: yes
