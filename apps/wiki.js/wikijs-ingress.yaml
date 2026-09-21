@@ -4,8 +4,15 @@ metadata:
   name: wikijs
   namespace: wiki
   annotations:
-    traefik.ingress.kubernetes.io/router.entrypoints: web
+    traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
+    traefik.ingress.kubernetes.io/router.middlewares: kube-system-redirect-https@kubernetescrd
+    cert-manager.io/cluster-issuer: letsencrypt-cloudflare
 spec:
+  ingressClassName: traefik
+  tls:
+    - hosts:
+        - wiki.littlehomelab.com
+      secretName: wiki-tls-cert
   rules:
   - host: wiki.littlehomelab.com
     http:
