@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: bentopdf
-        image: ghcr.io/bentopdf/bentopdf:latest
+        image: bentopdfteam/bentopdf:sha-ea3f42d
         imagePullPolicy: IfNotPresent
         env:
         - name: TZ
