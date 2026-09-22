@@ -18,6 +18,11 @@ spec:
         # --- Disable Standalone Envoy to bypass ARM64 TCMalloc crashes ---
         envoy:
           enabled: false
+        # --- eBPF Map Memory Tuning ---
+        bpf:
+          mapDynamicSizeRatio: 0.001
+          ctGlobalTcpMax: 262144
+          ctGlobalAnyMax: 131072
         # --- Your Active Cilium Settings ---
         k8sServiceHost: 172.69.115.201
         k8sServicePort: 6443
