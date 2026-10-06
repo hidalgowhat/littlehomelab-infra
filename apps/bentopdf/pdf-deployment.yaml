@@ -19,6 +19,13 @@ spec:
       - name: bentopdf
         image: ghcr.io/alam00000/bentopdf-simple:latest
         imagePullPolicy: IfNotPresent
+        resources:
+          requests:
+            cpu: 10m
+            memory: 32Mi
+          limits:
+            cpu: 500m
+            memory: 256Mi
         env:
         - name: TZ
           value: "America/Los_Angeles"

@@ -19,6 +19,13 @@ spec:
       - name: <APP_NAME>
         image: <DOCKER_IMAGE>:<TAG>
         imagePullPolicy: IfNotPresent
+        resources:
+          requests:
+            cpu: 10m
+            memory: 64Mi
+          limits:
+            cpu: 200m
+            memory: 256Mi
         env:
         - name: TZ
           value: "America/Los_Angeles"

@@ -20,6 +20,13 @@ spec:
         - name: authelia
           image: authelia/authelia:latest
           imagePullPolicy: IfNotPresent
+          resources:
+            requests:
+              cpu: 10m
+              memory: 64Mi
+            limits:
+              cpu: 200m
+              memory: 128Mi
           ports:
             - containerPort: 9091
               name: http
