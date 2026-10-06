@@ -7,7 +7,8 @@
 - **Networking**: Cilium CNI with `kubeProxyReplacement`, L2 announcements, and IP pool `172.69.115.210-250`.
   - *ARM64 Gotcha*: Cilium standalone Envoy is disabled (`envoy.enabled: false`) to bypass ARM64 TCMalloc crashes; eBPF map dynamic size ratio is tuned to `0.001`.
 - **Ingress & TLS**: Traefik + Cloudflare Tunnel (`cloudflare` namespace) for `*.littlehomelab.com`. Certificates handled by cert-manager `ClusterIssuer/letsencrypt-cloudflare` (DNS-01 ACME).
-- **Storage**: `local-path` StorageClass (`ReadWriteOnce`). Pods bound to local volumes must remain on their scheduled node.
+- **Storage**: `local-path` StorageClass (`ReadWriteOnce`). Pods bound to local volumes must remain on their scheduled node. `pi5-8gb-node` has an attached NVMe SSD; high-IOPS stateful applications (Postgres, Pi-hole, Uptime Kuma) intentionally keep their PVCs on `pi5-8gb-node`.
+- **Deployment Strategy Gotcha**: Single-replica stateful workloads with `hostPort` (e.g. Pi-hole on port 53) or node-bound local PVCs must use `strategy.type: Recreate` instead of default `RollingUpdate`; otherwise rollouts deadlock because the new pod cannot bind the host port or volume while the old pod is terminating.
 
 ## GitOps Workflow (Argo CD)
 - **App-of-Apps**: `bootstrap/root-app.yaml` watches `argocd-apps/` on branch `main` (`HEAD`).

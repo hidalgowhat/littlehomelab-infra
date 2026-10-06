@@ -18,13 +18,6 @@ spec:
       containers:
       - name: pihole
         image: pihole/pihole:latest
-        resources:
-          requests:
-            cpu: 20m
-            memory: 64Mi
-          limits:
-            cpu: 200m
-            memory: 256Mi
         env:
         - name: TZ
           value: "America/Los_Angeles"
