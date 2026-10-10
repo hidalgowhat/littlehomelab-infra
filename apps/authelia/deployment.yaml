@@ -7,6 +7,8 @@ metadata:
     app: authelia
 spec:
   replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: authelia
@@ -16,6 +18,15 @@ spec:
         app: authelia
     spec:
       enableServiceLinks: false  # Disables auto-injected K8s service env vars
+      nodeSelector:
+        kubernetes.io/hostname: pi5-8gb-node
+      tolerations:
+        - key: "node-role.kubernetes.io/control-plane"
+          operator: "Exists"
+          effect: "NoSchedule"
+        - key: "node-role.kubernetes.io/master"
+          operator: "Exists"
+          effect: "NoSchedule"
       containers:
         - name: authelia
           image: authelia/authelia:latest
@@ -30,6 +41,22 @@ spec:
           ports:
             - containerPort: 9091
               name: http
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: 9091
+            initialDelaySeconds: 10
+            periodSeconds: 15
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: 9091
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 2
           envFrom:
             - secretRef:
                 name: authelia-secrets
@@ -47,7 +74,8 @@ spec:
           secret:
             secretName: authelia-config   # <-- Updated from configMap to secret
         - name: storage-data
-          emptyDir: {}
+          persistentVolumeClaim:
+            claimName: authelia-data-pvc
 ---
 apiVersion: v1
 kind: Service

@@ -4,8 +4,10 @@ metadata:
   name: authelia
   namespace: default
   annotations:
-    ingress.class: traefik
+    cert-manager.io/cluster-issuer: letsencrypt-cloudflare
+    traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
 spec:
+  ingressClassName: traefik
   rules:
     - host: auth.littlehomelab.com
       http:
