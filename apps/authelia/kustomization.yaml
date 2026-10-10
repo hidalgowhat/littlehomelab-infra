@@ -4,7 +4,6 @@ kind: Kustomization
 namespace: default
 
 resources:
-  - certificate.yaml
   - authelia-secret.sops.yaml
   - secret.sops.yaml
   - middleware.yaml
