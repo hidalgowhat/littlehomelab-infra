@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: coredns-custom
+  namespace: kube-system
+data:
+  littlehomelab.server: |
+    littlehomelab.com:53 {
+        errors
+        cache 30
+        hosts {
+            172.69.115.211 auth.littlehomelab.com
+            172.69.115.211 argocd.littlehomelab.com
+            fallthrough
+        }
+        forward . 172.69.115.201:53
+    }
