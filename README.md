@@ -1,6 +1,6 @@
 # Little Homelab Infrastructure (`littlehomelab-infra`)
 
-A production-grade, GitOps-managed Kubernetes cluster running on a 4-node Raspberry Pi ARM64 (`aarch64`) cluster. This repository serves as the single source of truth for all infrastructure, applications, network policies, and configuration using Argo CD, Cilium CNI, Traefik, cert-manager, Authelia SSO, and SOPS with Age encryption.
+A production-grade(ish), GitOps-managed Kubernetes cluster running on a 4-node Raspberry Pi ARM64 (`aarch64`) cluster. This repository serves as the single source of truth for all infrastructure, applications, network policies, and configuration using Argo CD, Cilium CNI, Traefik, cert-manager, Authelia SSO, and SOPS with Age encryption.
 
 ---
 
