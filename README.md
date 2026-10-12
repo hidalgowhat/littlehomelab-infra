@@ -46,7 +46,7 @@ All services are accessible under the `*.littlehomelab.com` domain.
 | **Argo CD** | `argocd` | `argocd.littlehomelab.com` | `443` | **Authelia OIDC** | GitOps management and cluster deployment dashboard |
 | **Authelia** | `default` | `auth.littlehomelab.com` | `9091` | **Public / Root** | Central authentication provider (OIDC & ForwardAuth) |
 | **Homepage** | `homepage` | `homepage.littlehomelab.com` | `3000` | **ForwardAuth** | Homelab operations dashboard and service portal |
-| **Wiki.js** | `wiki` | `wiki.littlehomelab.com` | `3000` | **Internal Auth** | Team documentation platform backed by PostgreSQL |
+| **Wiki.js** | `wiki` | `wiki.littlehomelab.com` | `3000` | **ForwardAuth** | Team documentation platform backed by PostgreSQL |
 | **BentoPDF** | `bentopdf` | `pdf.littlehomelab.com` | `8080` | **Public** | Lightweight privacy-focused PDF editing suite |
 | **Grafana** | `monitoring` | `grafana.littlehomelab.com` | `80` | **Internal Auth** | Metrics dashboards (Prometheus, system metrics) |
 | **Hubble UI** | `kube-system` | `hubble.littlehomelab.com` | `80` | **Public** | Cilium eBPF network observability and service map |
