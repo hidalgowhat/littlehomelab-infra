@@ -37,7 +37,7 @@ spec:
               memory: 64Mi
             limits:
               cpu: 200m
-              memory: 128Mi
+              memory: 256Mi
           ports:
             - containerPort: 9091
               name: http
