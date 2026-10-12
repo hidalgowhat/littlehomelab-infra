@@ -8,25 +8,7 @@ A production-grade(ish), GitOps-managed Kubernetes cluster running on a 4-node R
 
 The cluster runs lightweight Kubernetes ([k3s](https://k3s.io)) across four physical Raspberry Pi boards connected to a local subnet (`172.69.115.0/24`).
 
-```
-                              Internet
-                                 │
-                         [ Cloudflare DNS ]
-                                 │
-                         [ Cloudflare Tunnel ] (cloudflared HA)
-                                 │
-      LAN Devices ───────────────┼────────────────────────┐
-           │                     │                        │
-     (DNS: Pi-hole)              ▼                        ▼
-           │           [ Traefik Ingress ] ──── [ Authelia SSO ]
-           ▼            (172.69.115.211)          (auth.littlehomelab.com)
-  [ Pi-hole 172.69.115.201 ]     │                        │
-                                 ▼ (ForwardAuth / OIDC)   │
-                     ┌────────────────────────────────────┼───────────────────┐
-                     ▼                                    ▼                   ▼
-            [ Homepage Dashboard ]                 [ Argo CD Web ]       [ Workloads ]
-           (homepage.littlehomelab.com)          (argocd.littlehomelab.com) (Wiki, PDF, etc.)
-```
+![Cluster Architecture](architecture.drawio.svg)
 
 ### Cluster Nodes
 
