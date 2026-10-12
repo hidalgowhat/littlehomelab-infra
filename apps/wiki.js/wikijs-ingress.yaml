@@ -5,6 +5,7 @@ metadata:
   namespace: wiki
   annotations:
     traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
+    traefik.ingress.kubernetes.io/router.middlewares: default-authelia-forwardauth@kubernetescrd
     cert-manager.io/cluster-issuer: letsencrypt-cloudflare
 spec:
   ingressClassName: traefik
