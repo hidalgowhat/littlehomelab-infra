@@ -8,7 +8,7 @@ A production-grade(ish), GitOps-managed Kubernetes cluster running on a 4-node R
 
 The cluster runs lightweight Kubernetes ([k3s](https://k3s.io)) across four physical Raspberry Pi boards connected to a local subnet (`172.69.115.0/24`).
 
-![Cluster Architecture](architecture.drawio.svg)
+![Cluster Architecture](docs/assets/architecture.drawio.svg)
 
 ### Cluster Nodes
 
