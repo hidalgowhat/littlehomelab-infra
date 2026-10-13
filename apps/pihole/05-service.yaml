@@ -3,7 +3,17 @@ kind: Ingress
 metadata:
   name: pihole-ingress
   namespace: pihole
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-cloudflare
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    # Attach Authelia ForwardAuth Middleware (Format: namespace-middlewareName@kubernetescrd)
+    traefik.ingress.kubernetes.io/router.middlewares: default-authelia-forwardauth@kubernetescrd,pihole-pihole-redirect-admin@kubernetescrd
 spec:
+  ingressClassName: traefik
+  tls:
+  - hosts:
+    - pihole.littlehomelab.com
+    secretName: pihole-tls
   rules:
   - host: pihole.littlehomelab.com
     http:
