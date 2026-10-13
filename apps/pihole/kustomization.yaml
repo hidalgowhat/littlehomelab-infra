@@ -10,3 +10,4 @@ resources:
   - 04-deployment.yaml
   - 05-service.yaml
   - pihole-custom-dnsmasq-configmap.yaml
+  - middleware.yaml
