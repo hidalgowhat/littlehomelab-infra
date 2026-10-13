@@ -102,6 +102,9 @@ littlehomelab-infra/
 │   ├── stateless/                   # Namespace, Secret, Deployment, Service, Ingress
 │   ├── stateful-app/                # Deployment with local-path PVC and Service
 │   └── cronjob/                     # Scheduled backup job template
+├── docs/                            # Documentation assets and diagrams
+│   └── assets/                      # Visual schematics and architectural diagrams
+│       └── architecture.drawio.svg  # Draw.io network and cluster topology diagram
 ├── .sops.yaml                       # SOPS encryption creation rules (Age public key)
 └── opencode.json                    # OpenCode CLI permissions and configuration
 ```
