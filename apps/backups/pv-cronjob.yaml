@@ -12,8 +12,10 @@ spec:
   concurrencyPolicy: Forbid
   successfulJobsHistoryLimit: 3
   failedJobsHistoryLimit: 3
+  startingDeadlineSeconds: 300
   jobTemplate:
     spec:
+      activeDeadlineSeconds: 600
       template:
         metadata:
           labels:

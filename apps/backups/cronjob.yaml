@@ -3,21 +3,30 @@ kind: CronJob
 metadata:
   name: k3s-sqlite-backup
   namespace: default
+  labels:
+    app.kubernetes.io/name: k3s-sqlite-backup
+    app.kubernetes.io/component: backup
 spec:
   # Runs daily at 2:00 AM
   schedule: "0 2 * * *"
   concurrencyPolicy: Forbid
   successfulJobsHistoryLimit: 3
   failedJobsHistoryLimit: 3
+  startingDeadlineSeconds: 300
   jobTemplate:
     spec:
+      activeDeadlineSeconds: 600
       template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: k3s-sqlite-backup
+            app.kubernetes.io/component: backup
         spec:
           imagePullSecrets:
             - name: dockerhub-registry-secret    
           # Required: K3s SQLite state.db only exists on control-plane nodes
           nodeSelector:
-            node-role.kubernetes.io/control-plane: "true"
+            kubernetes.io/hostname: pi5-8gb-node
           tolerations:
             - key: "node-role.kubernetes.io/control-plane"
               operator: "Exists"
@@ -28,7 +37,15 @@ spec:
           restartPolicy: OnFailure
           containers:
             - name: sqlite-r2-backup
-              image: hidalgowhat/k3s-backup:v1.0.0              
+              image: hidalgowhat/k3s-backup:v1.0.0
+              imagePullPolicy: IfNotPresent
+              resources:
+                requests:
+                  cpu: 25m
+                  memory: 64Mi
+                limits:
+                  cpu: 200m
+                  memory: 256Mi
               envFrom:
                 - secretRef:
                     name: cloudflare-r2-creds
