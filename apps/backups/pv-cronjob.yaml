@@ -1,0 +1,64 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: k3s-pv-backup
+  namespace: default
+  labels:
+    app.kubernetes.io/name: k3s-pv-backup
+    app.kubernetes.io/component: backup
+spec:
+  # Runs daily at 3:00 AM (right after the 2:00 AM sqlite backup)
+  schedule: "0 3 * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: k3s-pv-backup
+        spec:
+          # Required: Local-path storage directory only exists on pi5-8gb-node NVMe drive
+          nodeSelector:
+            kubernetes.io/hostname: pi5-8gb-node
+          tolerations:
+            - key: "node-role.kubernetes.io/control-plane"
+              operator: "Exists"
+              effect: "NoSchedule"
+            - key: "node-role.kubernetes.io/master"
+              operator: "Exists"
+              effect: "NoSchedule"
+          restartPolicy: OnFailure
+          containers:
+            - name: restic-pv-backup
+              image: restic/restic:0.17.3
+              imagePullPolicy: IfNotPresent
+              command: ["/bin/sh", "-c"]
+              args:
+                - |
+                  set -e
+                  echo "=== Starting K3s PV Backup: $(date) ==="
+                  restic backup /var/lib/rancher/k3s/storage --tag k3s-pvs
+                  echo "=== Pruning old snapshots ==="
+                  restic forget --tag k3s-pvs --keep-daily 7 --keep-weekly 4 --keep-monthly 6 --prune
+                  echo "=== Backup completed successfully: $(date) ==="
+              envFrom:
+                - secretRef:
+                    name: restic-r2-creds
+              resources:
+                requests:
+                  cpu: 50m
+                  memory: 128Mi
+                limits:
+                  cpu: 500m
+                  memory: 512Mi
+              volumeMounts:
+                - name: k3s-storage
+                  mountPath: /var/lib/rancher/k3s/storage
+                  readOnly: true
+          volumes:
+            - name: k3s-storage
+              hostPath:
+                path: /var/lib/rancher/k3s/storage
+                type: Directory

@@ -3,6 +3,8 @@ kind: Application
 metadata:
   name: backups
   namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
 spec:
   project: default
   source:
@@ -10,7 +12,7 @@ spec:
     targetRevision: HEAD
     path: apps/backups
     plugin:
-      name: sops-yaml-v1.0 # <--- Required so ArgoCD decrypts via our CMP sidecar
+      name: sops-yaml-v1.0
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: default

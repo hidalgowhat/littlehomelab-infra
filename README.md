@@ -53,7 +53,7 @@ All services are accessible under the `*.littlehomelab.com` domain.
 | **Uptime Kuma** | `monitoring` | `status.littlehomelab.com` | `3001` | **Internal Auth** | Service health checks and uptime status monitoring |
 | **Pi-hole** | `pihole` | `pihole.littlehomelab.com` | `80, 53` | **ForwardAuth** | Network-wide ad blocker and local DNS resolver |
 | **Utility Ping** | `default` | `ping.littlehomelab.com` | `80` | **Public** | Cluster health and network latency probe |
-| **K3s Backups** | `default` | *N/A (CronJob)* | *N/A* | *Internal* | Daily SQLite snapshot uploaded to Cloudflare R2 |
+| **K3s Backups** | `default` | *N/A (CronJob)* | *N/A* | *Internal* | Daily K3s SQLite & Restic PV snapshots to Cloudflare R2 |
 
 ---
 
