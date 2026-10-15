@@ -22,6 +22,8 @@ metadata:
   namespace: bentopdf
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-cloudflare
+    traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
+    traefik.ingress.kubernetes.io/router.middlewares: default-authelia-forwardauth@kubernetescrd
   labels:
     app.kubernetes.io/name: bentopdf
 spec:

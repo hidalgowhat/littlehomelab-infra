@@ -47,9 +47,9 @@ All services are accessible under the `*.littlehomelab.com` domain.
 | **Authelia** | `default` | `auth.littlehomelab.com` | `9091` | **Public / Root** | Central authentication provider (OIDC & ForwardAuth) |
 | **Homepage** | `homepage` | `homepage.littlehomelab.com` | `3000` | **ForwardAuth** | Homelab operations dashboard and service portal |
 | **Wiki.js** | `wiki` | `wiki.littlehomelab.com` | `3000` | **ForwardAuth** | Team documentation platform backed by PostgreSQL |
-| **BentoPDF** | `bentopdf` | `pdf.littlehomelab.com` | `8080` | **Public** | Lightweight privacy-focused PDF editing suite |
+| **BentoPDF** | `bentopdf` | `pdf.littlehomelab.com` | `8080` | **ForwardAuth** | Lightweight privacy-focused PDF editing suite |
 | **Grafana** | `monitoring` | `grafana.littlehomelab.com` | `80` | **Internal Auth** | Metrics dashboards (Prometheus, system metrics) |
-| **Hubble UI** | `kube-system` | `hubble.littlehomelab.com` | `80` | **Public** | Cilium eBPF network observability and service map |
+| **Hubble UI** | `kube-system` | `hubble.littlehomelab.com` | `80` | **ForwardAuth (Admins)** | Cilium eBPF network observability and service map |
 | **Uptime Kuma** | `monitoring` | `status.littlehomelab.com` | `3001` | **Internal Auth** | Service health checks and uptime status monitoring |
 | **Pi-hole** | `pihole` | `pihole.littlehomelab.com` | `80, 53` | **ForwardAuth** | Network-wide ad blocker and local DNS resolver |
 | **Utility Ping** | `default` | `ping.littlehomelab.com` | `80` | **Public** | Cluster health and network latency probe |

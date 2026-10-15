@@ -1,0 +1,13 @@
+apiVersion: helm.cattle.io/v1
+kind: HelmChartConfig
+metadata:
+  name: traefik
+  namespace: kube-system
+spec:
+  valuesContent: |-
+    service:
+      annotations:
+        io.cilium/lb-ipam-ips: "172.69.115.211"
+    additionalArguments:
+      - "--entryPoints.web.forwardedHeaders.trustedIPs=10.42.0.0/16,172.69.115.0/24"
+      - "--entryPoints.websecure.forwardedHeaders.trustedIPs=10.42.0.0/16,172.69.115.0/24"

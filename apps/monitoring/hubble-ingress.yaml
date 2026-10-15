@@ -4,9 +4,15 @@ metadata:
   name: hubble-ui
   namespace: kube-system
   annotations:
-    traefik.ingress.kubernetes.io/router.entrypoints: web
+    cert-manager.io/cluster-issuer: letsencrypt-cloudflare
+    traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
+    traefik.ingress.kubernetes.io/router.middlewares: default-authelia-forwardauth@kubernetescrd
 spec:
   ingressClassName: traefik
+  tls:
+    - hosts:
+        - hubble.littlehomelab.com
+      secretName: hubble-ui-tls
   rules:
     - host: hubble.littlehomelab.com # Change to your preferred local domain
       http:

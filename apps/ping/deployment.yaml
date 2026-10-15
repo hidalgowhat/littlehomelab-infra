@@ -13,6 +13,7 @@ spec:
       labels:
         app: utility-ping
     spec:
+      automountServiceAccountToken: false
       containers:
       - name: web-probe
         image: nginx:alpine
