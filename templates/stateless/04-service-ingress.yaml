@@ -22,7 +22,18 @@ metadata:
   namespace: <APP_NAME>
   labels:
     app.kubernetes.io/name: <APP_NAME>
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-cloudflare
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.tls: "true"
+    # Optional: Attach Authelia ForwardAuth SSO
+    # traefik.ingress.kubernetes.io/router.middlewares: default-authelia-forwardauth@kubernetescrd
 spec:
+  ingressClassName: traefik
+  tls:
+  - hosts:
+    - <APP_NAME>.littlehomelab.com
+    secretName: <APP_NAME>-tls-cert
   rules:
   - host: <APP_NAME>.littlehomelab.com
     http:

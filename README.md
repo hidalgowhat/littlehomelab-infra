@@ -179,14 +179,17 @@ Traffic to `*.littlehomelab.com` is routed using a hybrid split-DNS architecture
    - Fast-paths `auth.littlehomelab.com` and `argocd.littlehomelab.com` to `172.69.115.211`.
    - Forwards all other `littlehomelab.com` queries dynamically to Pi-hole (`172.69.115.201:53`).
 
-#### TLS Certificates (Cert-Manager)
-Certificates are issued automatically by cert-manager via Let's Encrypt DNS-01 challenges.
-* Add annotations directly to your `Ingress`:
+#### Global HTTP-to-HTTPS Redirection & TLS Certificates
+* **Global HTTP Redirection**: Traefik is configured via `infrastructure/traefik-config/traefik-config.yaml` with `--entryPoints.web.http.redirections.entryPoint.to=websecure`. All port 80 HTTP requests automatically receive an HTTP `308 Permanent Redirect` to HTTPS before evaluating any router or middleware.
+* **Cert-Manager Ingress-Shim**: Certificates are provisioned automatically via Let's Encrypt DNS-01 challenges. Standard Ingress definition:
   ```yaml
   metadata:
     annotations:
       cert-manager.io/cluster-issuer: letsencrypt-cloudflare
+      traefik.ingress.kubernetes.io/router.entrypoints: websecure
+      traefik.ingress.kubernetes.io/router.tls: "true"
   spec:
+    ingressClassName: traefik
     tls:
       - hosts:
           - myapp.littlehomelab.com
