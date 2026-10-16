@@ -16,10 +16,12 @@ The cluster runs lightweight Kubernetes ([k3s](https://k3s.io)) across four phys
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | **`pi5-8gb-node`** | `172.69.115.201` | Raspberry Pi 5 | Control Plane | 8 GB | K3s server, NVMe storage, Postgres, Pi-hole, Uptime Kuma, Authelia |
 | **`pi4-8gb-node`** | `172.69.115.202` | Raspberry Pi 4 Model B | Worker | 8 GB | Homepage, Wiki.js, BentoPDF, Cloudflared replica |
-| **`pi4-4gb-node`** | `172.69.115.203` | Raspberry Pi 4 Model B | Worker | 4 GB | Cilium operator, monitoring agents |
+| **`pi4-4gb-node`** | `172.69.115.203` | Raspberry Pi 4 Model B | Worker | 2 GB* | Cilium operator, monitoring agents |
 | **`pi4-2gb-node`** | `172.69.115.204` | Raspberry Pi 4 Model B | Worker | 2 GB | Cloudflared replica, lightweight network agents |
 
-> **Storage Architecture Note**: The control plane (`pi5-8gb-node`) is equipped with a dedicated high-speed NVMe SSD. High-IOPS stateful applications (Postgres, Pi-hole, Uptime Kuma, Authelia) are explicitly bound to this node via `local-path` Persistent Volumes.
+> **Hardware & Storage Notes**:
+> * `pi4-4gb-node` has 1.8 GB allocatable RAM (2 GB hardware profile).
+> * The control plane (`pi5-8gb-node`) boots `/boot/firmware` from the 32GB microSD card (`mmcblk0p1`) and is equipped with a dedicated high-speed NVMe SSD for cluster storage. High-IOPS stateful applications (Postgres, Pi-hole, Uptime Kuma, Authelia) are explicitly bound to this node via `local-path` Persistent Volumes.
 
 ---
 
@@ -64,6 +66,7 @@ littlehomelab-infra/
 ├── argocd-apps/                     # Argo CD Application manifests (App-of-Apps source)
 │   ├── argocd-config-app.yaml       # Argo CD RBAC, SSO, and repo-server customizations
 │   ├── authelia-app.yaml            # Authelia SSO application
+│   ├── backups-app.yaml             # K3s state and Persistent Volume backup CronJobs
 │   ├── bentopdf-app.yaml            # BentoPDF application
 │   ├── cert-manager-app.yaml        # cert-manager Helm chart
 │   ├── cert-manager-configs-app.yaml# ClusterIssuer (Let's Encrypt DNS-01)
@@ -81,23 +84,25 @@ littlehomelab-infra/
 ├── apps/                            # Kubernetes manifests for individual applications
 │   ├── argocd/                      # Argo CD configuration, patches, CMP plugin definition
 │   ├── authelia/                    # Authelia deployment, PVC, ingress, secrets
-│   ├── backups/                     # Cloudflare R2 backup CronJob and scripts
-│   ├── bentopdf/                    # BentoPDF deployment, service, ingress
+│   ├── backups/                     # SQLite and Restic PV backup CronJobs, SOPS secrets
+│   ├── bentopdf/                    # BentoPDF deployment, service, ingress, network policy
 │   ├── cert-manager-configs/        # ClusterIssuer definitions
 │   ├── homepage/                    # Homepage configmaps, service, ingress, secrets
 │   ├── monitoring/                  # Helm values for Prometheus/Grafana, ingresses
-│   ├── pihole/                      # Pi-hole deployment, service, PVC, custom dnsmasq
+│   ├── pihole/                      # Pi-hole deployment, service, PVC, redirect middleware
 │   ├── ping/                        # Utility ping probe manifests
-│   └── wiki.js/                     # Wiki.js and Postgres deployments, PVC, ingress
+│   └── wiki.js/                     # Wiki.js and Postgres deployments, PVC, network policy
 ├── infrastructure/                  # Core cluster infrastructure components
 │   ├── cilium-configs/              # Cilium LoadBalancer IP pools and L2 policies
 │   ├── cloudflared/                 # Cloudflare Tunnel manifests (HA deployment)
-│   └── coredns/                     # CoreDNS custom ConfigMap for internal split-DNS
+│   ├── coredns/                     # CoreDNS custom ConfigMap for internal split-DNS
+│   └── traefik-config/              # Traefik HelmChartConfig for trusted proxy IP headers
 ├── bootstrap/                       # Initial cluster bootstrap manifests
 │   └── root-app.yaml                # Argo CD Root Application (App-of-Apps root)
 ├── automation/                      # Cluster automation and maintenance scripts
 │   ├── cluster-checkup-script/      # Ansible playbook for hardware and k3s health checks
-│   └── cluster-update-script/       # Ansible playbook for serial apt upgrades and reboots
+│   ├── cluster-update-script/       # Ansible playbook for serial apt upgrades and reboots
+│   └── host-backup/                 # Archived host-level Restic backup scripts
 ├── templates/                       # Reusable starter templates for new services
 │   ├── stateless/                   # Namespace, Secret, Deployment, Service, Ingress
 │   ├── stateful-app/                # Deployment with local-path PVC and Service
@@ -191,8 +196,9 @@ Certificates are issued automatically by cert-manager via Let's Encrypt DNS-01 c
 
 ---
 
-### 4. Protecting an Application with Authelia SSO
+### 4. Authentication, Security & Network Policies
 
+#### Protecting an Ingress with Authelia SSO
 To gate any ingress behind Authelia ForwardAuth, add the Traefik middleware annotation:
 
 ```yaml
@@ -203,9 +209,42 @@ metadata:
 
 Unauthenticated requests will automatically redirect to `https://auth.littlehomelab.com/` for authentication and redirect back upon successful login.
 
+#### Role-Based Access Control (RBAC) Groups
+Authelia partitions users into two distinct access tiers (`access_control.rules`):
+* **Admin Tier (`group:admins`)**: Full access to all services (`argocd.littlehomelab.com`, `hubble.littlehomelab.com`, `pihole.littlehomelab.com`, etc.).
+* **Friend Tier (`group:friends`)**: Strictly limited to testing applications (`homepage.littlehomelab.com`, `wiki.littlehomelab.com`, `pdf.littlehomelab.com`). All cluster administration, monitoring, and network management tools are blocked.
+
+#### Real Client IP Preservation
+Traefik is configured via `infrastructure/traefik-config/traefik-config.yaml` with trusted proxy ranges:
+* `--entryPoints.web.forwardedHeaders.trustedIPs=10.42.0.0/16,172.69.115.0/24`
+* `--entryPoints.websecure.forwardedHeaders.trustedIPs=10.42.0.0/16,172.69.115.0/24`
+
+This ensures Traefik preserves real visitor IP addresses (`CF-Connecting-IP` / `X-Forwarded-For`) when forwarding requests to Authelia, preventing brute-force regulation from inadvertently banning internal `cloudflared` tunnel pods.
+
+#### Network Micro-Segmentation & Pod Hardening
+* **BentoPDF (`apps/bentopdf/network-policy.yaml`)**: Ingress is restricted strictly to Traefik on port `8080`. All lateral east-west cluster traffic and private LAN access are blocked.
+* **PostgreSQL (`apps/wiki.js/postgres-network-policy.yaml`)**: Port `5432` is restricted exclusively to Wiki.js pods within the `wiki` namespace.
+* **ServiceAccount Tokens**: Application pods set `automountServiceAccountToken: false` to prevent container breakout token harvesting.
+
 ---
 
-### 5. Cluster Automation & Maintenance
+### 5. Cluster Backup Architecture (K3s State & Persistent Volumes)
+
+Automated backups run nightly in `namespace: default` and upload compressed, encrypted snapshots directly to Cloudflare R2:
+
+1. **K3s SQLite State Backup (`k3s-sqlite-backup`)**:
+   * **Schedule**: Daily at `02:00 AM UTC`.
+   * **Target**: `/var/lib/rancher/k3s/server/db` mounted read-only from `pi5-8gb-node`.
+   * **Engine**: Containerized `hidalgowhat/k3s-backup:v1.0.0` executing an atomic `sqlite3 .backup`, gzip compression, and streaming to Cloudflare R2.
+2. **Persistent Volume Backup (`k3s-pv-backup`)**:
+   * **Schedule**: Daily at `03:00 AM UTC`.
+   * **Target**: `/var/lib/rancher/k3s/storage` (NVMe SSD storage) mounted as `readOnly: true` on `pi5-8gb-node`.
+   * **Engine**: Official `restic/restic:0.17.3` container backing up with `--tag k3s-pvs` and automated retention pruning (`--keep-daily 7 --keep-weekly 4 --keep-monthly 6 --prune`).
+   * **Encryption**: Deduplicated and encrypted at rest in Cloudflare R2 using credentials from `restic-r2-creds` SOPS secret.
+
+---
+
+### 6. Cluster Automation & Maintenance
 
 Maintenance scripts are located in the `automation/` directory.
 
