@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: homelable-frontend
+  namespace: homelable
+  labels:
+    app.kubernetes.io/name: homelable
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: homelable
+      app.kubernetes.io/component: frontend
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: homelable
+        app.kubernetes.io/component: frontend
+    spec:
+      automountServiceAccountToken: false
+      nodeSelector:
+        kubernetes.io/hostname: pi4-8gb-node
+      containers:
+      - name: homelable-frontend
+        image: ghcr.io/pouzor/homelable-frontend:3.6.0
+        imagePullPolicy: IfNotPresent
+        resources:
+          requests:
+            cpu: 20m
+            memory: 64Mi
+          limits:
+            cpu: 500m
+            memory: 256Mi
+        env:
+        - name: TZ
+          value: "America/Los_Angeles"
+        - name: BACKEND_UPSTREAM
+          value: "homelable-backend:8000"
+        ports:
+        - containerPort: 80
+          name: http
+          protocol: TCP
