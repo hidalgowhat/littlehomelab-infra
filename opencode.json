@@ -1,16 +1,46 @@
 {
   "$schema": "https://opencode.ai/config.json",
   "model": "google/gemini-3.8-flash",
-  "permission": {
-    "read": "allow",
-    "edit": "allow",
-    "bash": {
-      "*": "ask",
-      "helm *": "ask",
-      "kubectl *": "ask",
-      "kubectl logs *": "allow",
-      "kubectl describe *": "allow",
-      "kubectl get *": "allow"
+  "permissions": [
+    {
+      "action": "read",
+      "resource": "*",
+      "effect": "allow"
+    },
+    {
+      "action": "edit",
+      "resource": "*",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "*",
+      "effect": "ask"
+    },
+    {
+      "action": "shell",
+      "resource": "helm *",
+      "effect": "ask"
+    },
+    {
+      "action": "shell",
+      "resource": "kubectl *",
+      "effect": "ask"
+    },
+    {
+      "action": "shell",
+      "resource": "kubectl logs *",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "kubectl describe *",
+      "effect": "allow"
+    },
+    {
+      "action": "shell",
+      "resource": "kubectl get *",
+      "effect": "allow"
     }
-  }
+  ]
 }
