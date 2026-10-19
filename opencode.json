@@ -5,12 +5,12 @@
     "read": "allow",
     "edit": "allow",
     "bash": {
-      "kubectl get *": "allow",
-      "kubectl describe *": "allow",
-      "kubectl logs *": "allow",
-      "kubectl *": "ask",
+      "*": "ask",
       "helm *": "ask",
-      "*": "ask"
+      "kubectl *": "ask",
+      "kubectl logs *": "allow",
+      "kubectl describe *": "allow",
+      "kubectl get *": "allow"
     }
   }
 }
