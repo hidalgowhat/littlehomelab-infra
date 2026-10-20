@@ -54,6 +54,7 @@ All services are accessible under the `*.littlehomelab.com` domain.
 | **Hubble UI** | `kube-system` | `hubble.littlehomelab.com` | `80` | **ForwardAuth (Admins)** | Cilium eBPF network observability and service map |
 | **Uptime Kuma** | `monitoring` | `status.littlehomelab.com` | `3001` | **Internal Auth** | Service health checks and uptime status monitoring |
 | **Pi-hole** | `pihole` | `pihole.littlehomelab.com` | `80, 53` | **ForwardAuth** | Network-wide ad blocker and local DNS resolver |
+| **Homelable** | `homelable` | `map.littlehomelab.com` | `80, 8000` | **ForwardAuth (Admins)** | Network topology mapping and subnet asset discovery |
 | **Utility Ping** | `default` | `ping.littlehomelab.com` | `80` | **Public** | Cluster health and network latency probe |
 | **K3s Backups** | `default` | *N/A (CronJob)* | *N/A* | *Internal* | Daily K3s SQLite & Restic PV snapshots to Cloudflare R2 |
 
@@ -74,6 +75,7 @@ littlehomelab-infra/
 │   ├── cilium-infra-app.yaml        # Cilium L2 IP pools and announcement policies
 │   ├── cloudflared-app.yaml         # Cloudflare Tunnel deployment
 │   ├── coredns-app.yaml             # CoreDNS split-DNS custom configurations
+│   ├── homelable-app.yaml           # Homelable network mapping & scanner application
 │   ├── homepage.yaml                # Homepage dashboard application
 │   ├── monitoring.yaml              # kube-prometheus-stack Helm release
 │   ├── pihole-app.yaml              # Pi-hole DNS and ad-blocking deployment
@@ -87,6 +89,7 @@ littlehomelab-infra/
 │   ├── backups/                     # SQLite and Restic PV backup CronJobs, SOPS secrets
 │   ├── bentopdf/                    # BentoPDF deployment, service, ingress, network policy
 │   ├── cert-manager-configs/        # ClusterIssuer definitions
+│   ├── homelable/                   # Homelable frontend, backend, PVC, ingress
 │   ├── homepage/                    # Homepage configmaps, service, ingress, secrets
 │   ├── monitoring/                  # Helm values for Prometheus/Grafana, ingresses
 │   ├── pihole/                      # Pi-hole deployment, service, PVC, redirect middleware
