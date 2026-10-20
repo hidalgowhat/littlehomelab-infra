@@ -67,6 +67,12 @@ spec:
           value: '["https://map.littlehomelab.com"]'
         - name: SQLITE_PATH
           value: /app/data/homelable.db
+        - name: SCANNER_HTTP_PROBE_ENABLED
+          value: "true"
+        - name: SCANNER_HTTP_RANGES
+          value: '["80","443","3000","3001","6443","8000","8080","9091","9100"]'
+        - name: SCANNER_HTTP_VERIFY_TLS
+          value: "false"
         ports:
         - containerPort: 8000
           name: http
