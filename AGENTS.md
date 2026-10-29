@@ -13,6 +13,10 @@
 - **Storage Subsystem**:
   - `local-path` StorageClass (`ReadWriteOnce`).
   - Workloads bound to local-path PVCs must remain pinned to their node. Never rely on dynamic rescheduling for single-node local storage volumes.
+- **Host-Level Hardening & Node Prerequisites**:
+  - **ARM64 Core Dump Suppression**: All four Raspberry Pi nodes require `/etc/sysctl.d/50-coredump.conf` set to `kernel.core_pattern = |/bin/false`. This prevents recurring ARM64 TCMalloc crashes during periodic `cilium-envoy --version` health invocations from dumping multi-gigabyte cores into memory.
+  - **Cilium State Mount (`/run/cilium/state`)**: Worker nodes (especially `pi4-8gb-node`) must mount `/var/lib/cilium-state` to `/run/cilium/state` in `/etc/fstab` via `bind,defaults 0 0` to prevent temporary endpoint compilation files from consuming 100% of the `/run` tmpfs partition.
+  - **Pi 5 PCIe Stability**: `/boot/firmware/config.txt` on `pi5-8gb-node` must stay locked to `dtparam=pciex1` (PCIe Gen 2, 5 Gbps) to avoid signal-degradation I/O crashes (error -5 EIO) and ext4 emergency shutdowns over FFC ribbon cables.
 
 ---
 
@@ -122,6 +126,9 @@
 - **Cluster Automation Scripts**:
   - Hardware health & resources (temps, throttling, disk, k3s): `./automation/cluster-checkup-script/cluster-checkup.sh`
   - System packages update & serial reboots: `./automation/cluster-update-script/cluster-update.sh`
+- **Troubleshooting & Incident Runbook**:
+  - **Stale Cilium iptables NAT Deadlock**: If pod egress stops being masqueraded to the LAN (e.g., Pi-hole cannot reach public upstreams 1.1.1.1/9.9.9.9), check for deadlocked rules in `OLD_CILIUM_POST_nat` (such as strings matching ASCII `cili` / `99.105.108.105`). The fix is flushing the chain via `sudo iptables -t nat -F OLD_CILIUM_POST_nat`, allowing Cilium to immediately reinstall the active `10.42.0.0/24` masquerading rule.
+  - **Pi-hole Concurrent Query Saturation**: If Pi-hole loses outbound egress connectivity, pending queries queue up until hitting dnsmasq's ceiling (`Maximum number of concurrent DNS queries reached (max: 150)`). Once saturated, Pi-hole drops all incoming LAN requests, mimicking a total port 53 service outage while the container remains `Running`.
 
 ---
 

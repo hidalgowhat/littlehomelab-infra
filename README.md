@@ -14,14 +14,21 @@ The cluster runs lightweight Kubernetes ([k3s](https://k3s.io)) across four phys
 
 | Node Name | IP Address | Hardware | Role | Memory | Primary Workloads |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **`pi5-8gb-node`** | `172.69.115.201` | Raspberry Pi 5 | Control Plane | 8 GB | K3s server, NVMe storage, Postgres, Pi-hole, Uptime Kuma, Authelia |
+| **`pi5-8gb-node`** | `172.69.115.201` | Raspberry Pi 5 *(PCIe Gen 2)* | Control Plane | 8 GB | K3s server, NVMe storage, Postgres, Pi-hole, Uptime Kuma, Authelia |
 | **`pi4-8gb-node`** | `172.69.115.202` | Raspberry Pi 4 Model B | Worker | 8 GB | Homepage, Wiki.js, BentoPDF, Cloudflared replica |
 | **`pi4-4gb-node`** | `172.69.115.203` | Raspberry Pi 4 Model B | Worker | 2 GB* | Cilium operator, monitoring agents |
 | **`pi4-2gb-node`** | `172.69.115.204` | Raspberry Pi 4 Model B | Worker | 2 GB | Cloudflared replica, lightweight network agents |
 
 > **Hardware & Storage Notes**:
 > * `pi4-4gb-node` has 1.8 GB allocatable RAM (2 GB hardware profile).
-> * The control plane (`pi5-8gb-node`) boots `/boot/firmware` from the 32GB microSD card (`mmcblk0p1`) and is equipped with a dedicated high-speed NVMe SSD for cluster storage. High-IOPS stateful applications (Postgres, Pi-hole, Uptime Kuma, Authelia) are explicitly bound to this node via `local-path` Persistent Volumes.
+> * The control plane (`pi5-8gb-node`) boots `/boot/firmware` from the 32GB microSD card (`mmcblk0p1`) and is equipped with a dedicated high-speed NVMe SSD for cluster storage. High-IOPS stateful applications (Postgres, Pi-hole, Uptime Kuma, Authelia) are explicitly bound to this node via `local-path` Persistent Volumes. Its PCIe bus is locked to Gen 2 (`dtparam=pciex1`, 5 Gbps) in `/boot/firmware/config.txt` to prevent signal-degradation I/O crashes and ext4 emergency shutdowns over FFC ribbon cables.
+
+### Node Provisioning / Setup Notes
+
+When provisioning or re-imaging nodes in the cluster, apply the following host-level prerequisites:
+
+* **ARM64 Core Dump Suppression**: Configure `/etc/sysctl.d/50-coredump.conf` with `kernel.core_pattern = |/bin/false` across all four Raspberry Pi nodes (`sudo sysctl --system`). This prevents recurring ARM64 TCMalloc crashes during periodic `cilium-envoy --version` health invocations from dumping multi-gigabyte cores into memory.
+* **Cilium State Mount (`/run/cilium/state`)**: Worker nodes (especially `pi4-8gb-node`) must mount `/var/lib/cilium-state` to `/run/cilium/state` in `/etc/fstab` via `bind,defaults 0 0` (`/var/lib/cilium-state /run/cilium/state none bind,defaults 0 0`) to prevent temporary endpoint compilation files from consuming 100% of the `/run` tmpfs partition.
 
 ---
 
